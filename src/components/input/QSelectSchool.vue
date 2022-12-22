@@ -1,5 +1,5 @@
 <script lang="ts">
-import { USER_ICI_POUR } from 'src/enums/emunsUser';
+import { SCHOOL } from 'src/enums/emunsUser';
 import { defineComponent } from 'vue';
 export default defineComponent({});
 </script>
@@ -16,7 +16,7 @@ export default defineComponent({});
       option-label="desc"
       emit-value
       map-options
-      label="Ici pour.."
+      label="Votre université"
     >
       <template v-slot:option="scope">
         <q-item v-bind="scope.itemProps">
@@ -35,19 +35,19 @@ export default defineComponent({});
 <script setup lang="ts">
 const options = [
   {
-    id: USER_ICI_POUR.AMOUR,
-    desc: 'Rencontre amoureuse',
+    id: SCHOOL.PAUL_VALÉRY,
+    desc: 'Université Paul Valéry',
     icon: 'favorite',
   },
   {
-    id: USER_ICI_POUR.AMITIE,
-    desc: 'Rencontre amicale',
-    icon: 'people',
+    id: SCHOOL.FAC_SCIENCE,
+    desc: 'Université des sciences',
+    icon: 'school',
   },
   {
-    id: USER_ICI_POUR.RENCONTRE,
-    desc: 'Une rencontre sans lendemain',
-    icon: 'cruelty_free',
+    id: SCHOOL.FAC_MEDCINE,
+    desc: 'Université de médecine',
+    icon: 'school',
   },
 ];
 </script>

@@ -5,6 +5,7 @@ import QInputCity from 'src/components/input/QInputCity.vue';
 import QInputMail from 'src/components/input/QInputMail.vue';
 import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
+import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 </script>
 
 <template>
@@ -234,6 +235,11 @@ import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
           class="text-black q-gutter-y-sm"
         >
           <q-card-section class="q-pa-none">
+            <div class="text-subtitle2">Votre université...</div>
+          </q-card-section>
+          <QInputUniversite v-model="newUser.userSchoolId" class="bg-white" />
+
+          <q-card-section class="q-pa-none">
             <div class="text-subtitle2">Vous êtes ici pour...</div>
           </q-card-section>
           <QSelectIciPour v-model="newUser.userIciPourId" class="bg-white" />
@@ -290,12 +296,12 @@ import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 <script setup lang="ts">
 //import { Todo } from 'src/components/models';
 import { watch, ref, computed } from 'vue';
-import { ICreateUser, useAuthStore } from 'src/stores/authStore';
+import { ICreateOrEditUser, useAuthStore } from 'src/stores/authStore';
 
 const loading = ref(false);
 const authStore = useAuthStore();
 
-const createNewUser = async (newUser: ICreateUser) => {
+const createNewUser = async (newUser: ICreateOrEditUser) => {
   // we set loading state
   loading.value = true;
   setTimeout(() => {
@@ -304,10 +310,11 @@ const createNewUser = async (newUser: ICreateUser) => {
   }, 1000);
 };
 
-const newUser = ref<ICreateUser>({
+const newUser = ref<ICreateOrEditUser>({
   userFirstname: '',
   userLastname: '',
   userCity: 'Montpellier',
+  userSchoolId: 1, // valeur par default Paul Valéry
   userGenreId: 0,
   userEmail: '',
   userPassword: '',

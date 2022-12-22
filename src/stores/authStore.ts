@@ -7,16 +7,17 @@ export enum USER_ROLE {
   ADMIN = 'ADMIN',
 }
 
-export interface IConnectedUser extends ICreateUser {
+export interface IConnectedUser extends ICreateOrEditUser {
   userId: number;
   userRoleId: USER_ROLE;
 }
 
-export interface ICreateUser {
+export interface ICreateOrEditUser {
   userId?: number;
   userFirstname: string;
   userLastname: string;
   userCity: string;
+  userSchoolId: number | string;
   userGenreId: number;
   userEmail: string;
   userPassword?: string;
@@ -24,13 +25,18 @@ export interface ICreateUser {
   userDescription: string;
 }
 
-export interface ILoginUser {
-  userEmail: string;
-  userId?: number;
+export interface ICookieUser {
+  userId: number;
   userFirstname: string;
+  userEmail: string;
 }
 
-export type IAddNewUser = ICreateUser;
+export interface ILoginUser {
+  userEmail: string;
+  userPassword: string;
+}
+
+export type IAddNewUser = ICreateOrEditUser;
 
 export interface IToken {
   value: string;
@@ -40,8 +46,8 @@ export interface IToken {
 export const useAuthStore = defineStore('Auth', {
   state: () => ({
     isNewUser: false,
-    connectedUser: undefined as ICreateUser | undefined,
-    cookieUser: undefined as ILoginUser | undefined,
+    connectedUser: undefined as ICreateOrEditUser | undefined,
+    cookieUser: undefined as ICookieUser | undefined,
     token: undefined as IToken | undefined,
   }),
   getters: {
@@ -52,7 +58,7 @@ export const useAuthStore = defineStore('Auth', {
   actions: {
     async tryToConnectWithCookies() {
       this.cookieUser = Cookies.get('user_polydate')
-        ? (Cookies.get('user_polydate') as ILoginUser)
+        ? (Cookies.get('user_polydate') as ICookieUser)
         : undefined;
       this.token = Cookies.get('token_polydate')
         ? (Cookies.get('token_polydate') as IToken)
