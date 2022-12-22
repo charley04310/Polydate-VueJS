@@ -1,3 +1,12 @@
+<script lang="ts">
+import QInputFIrstName from 'src/components/input/QInputFIrstName.vue';
+import QInputLastName from 'src/components/input/QInputLastName.vue';
+import QInputCity from 'src/components/input/QInputCity.vue';
+import QInputMail from 'src/components/input/QInputMail.vue';
+import QInputDescription from 'src/components/input/QInputDescription.vue';
+import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
+</script>
+
 <template>
   <div class="q-gutter-y-md container-register">
     <h1
@@ -28,32 +37,9 @@
                 <q-item-label>Qui êtes vous ?</q-item-label>
               </q-item-section>
             </q-item>
-            <q-input
-              input-style="min-width: 450px"
-              class="q-mx-none"
-              filled
-              v-model="newUser.userFirstname"
-              label="Nom"
-            />
-            <q-input
-              input-style="min-width: 450px"
-              class="q-mx-none"
-              outlined
-              filled
-              v-model="newUser.userLastname"
-              label="Prénom"
-            />
-            <q-input
-              input-style="min-width: 450px"
-              class="q-mx-none"
-              :disable="true"
-              outlined
-              filled
-              v-model="newUser.userCity"
-              label="Ville universitaire"
-            >
-              >
-            </q-input>
+            <QInputFIrstName v-model="newUser.userFirstname" />
+            <QInputLastName v-model="newUser.userLastname" />
+            <QInputCity v-model="newUser.userCity" />
           </q-card>
           <q-separator></q-separator>
           <div class="text-black">
@@ -121,21 +107,14 @@
               <q-item-label>Informations de connexion</q-item-label>
             </q-item-section>
           </q-item>
-
-          <q-input
-            input-style="min-width: 450px"
-            class="q-mx-none"
-            outlined
-            filled
-            v-model="newUser.userEmail"
+          <QInputMail
             :rules="[
-              (val, rules) =>
+              (val: string, rules: any) =>
                 isStudentMail(val)
                   ? (emailIsValide = true)
                   : 'Email étudiant non valide : @etu.montpellier.fr',
             ]"
-            lazy-rules
-            label="Votre adresse email"
+            v-model="newUser.userEmail"
           />
           <q-separator></q-separator>
           <q-item>
@@ -257,30 +236,14 @@
           <q-card-section class="q-pa-none">
             <div class="text-subtitle2">Vous êtes ici pour...</div>
           </q-card-section>
-          <q-select
-            outlined
-            filled
-            input-style="min-width: 450px"
-            v-model="newUser.userIciPourId"
-            :options="options"
-            option-value="id"
-            option-label="desc"
-            emit-value
-            map-options
-            label="Ici pour.."
-          />
+          <QSelectIciPour v-model="newUser.userIciPourId" class="bg-white" />
+
           <q-separator></q-separator>
           <q-card-section class="q-pa-none">
             <div class="text-subtitle2">Description</div>
           </q-card-section>
 
-          <q-input
-            filled
-            input-style="min-width: 450px"
-            v-model="newUser.userDescription"
-            outlined
-            type="textarea"
-          />
+          <QInputDescription v-model="newUser.userDescription" />
         </q-card>
 
         <q-stepper-navigation v-if="!authStore.isNewUser">
@@ -362,30 +325,9 @@ const passwordConfirmation = ref('');
 const step = ref(1);
 const selection = ref([]);
 
-enum USER_ICI_POUR {
-  AMOUR = 1,
-  AMITIE = 2,
-  RENCONTRE = 3,
-}
-
-const options = [
-  {
-    id: USER_ICI_POUR.AMOUR,
-    desc: 'Rencontre amoureuse',
-  },
-  {
-    id: USER_ICI_POUR.AMITIE,
-    desc: 'Rencontre amicale',
-  },
-  {
-    id: USER_ICI_POUR.RENCONTRE,
-    desc: 'Rencontre amicale',
-  },
-];
 const emit = defineEmits<{
   (e: 'loginPage'): void;
 }>();
-
 watch(selection, (newSelection) => {
   newUser.value.userGenreId = parseInt(selection.value[0]);
 

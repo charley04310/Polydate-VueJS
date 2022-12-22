@@ -7,25 +7,10 @@
     </q-item>
 
     <div class="q-gutter-y-md q-mt-sm">
-      <q-input
-        input-style="min-width: 450px"
-        class="q-mx-none"
-        type="email"
-        bg-color="white"
-        outlined
-        v-model="userLogin.userEmail"
-        label="Adresse email"
-      />
-      <q-input
-        input-style="min-width: 450px"
-        class="q-mx-none"
-        bg-color="white"
-        type="password"
-        outlined
-        v-model="userLogin.userPassword"
-        label="Mot de passe"
-      />
+      <QInputMail v-model="userLogin.userEmail" />
+      <QInputPassword v-model="userLogin.userPassword" />
     </div>
+
     <div class="column q-gutter-y-md q-mt-sm text-secondary">
       <q-btn
         class="q-mx-none"
@@ -47,6 +32,8 @@
 
 <script setup lang="ts">
 import { ILoginUser, useAuthStore } from 'src/stores/authStore';
+import QInputMail from 'src/components/input/QInputMail.vue';
+import QInputPassword from 'src/components/input/QInputPassword.vue';
 import { ref } from 'vue';
 const authStore = useAuthStore();
 const errorLogin = ref(false);

@@ -13,12 +13,13 @@ export interface IConnectedUser extends ICreateUser {
 }
 
 export interface ICreateUser {
+  userId?: number;
   userFirstname: string;
   userLastname: string;
   userCity: string;
   userGenreId: number;
   userEmail: string;
-  userPassword: string;
+  userPassword?: string;
   userIciPourId: number | string;
   userDescription: string;
 }
@@ -26,7 +27,7 @@ export interface ICreateUser {
 export interface ILoginUser {
   userEmail: string;
   userId?: number;
-  userPassword: string;
+  userFirstname: string;
 }
 
 export type IAddNewUser = ICreateUser;
@@ -39,21 +40,25 @@ export interface IToken {
 export const useAuthStore = defineStore('Auth', {
   state: () => ({
     isNewUser: false,
-    connectedUser: undefined as ICreateUser | undefined | ILoginUser,
+    connectedUser: undefined as ICreateUser | undefined,
+    cookieUser: undefined as ILoginUser | undefined,
     token: undefined as IToken | undefined,
   }),
   getters: {
     isAuthenticated(): boolean {
-      return this.connectedUser !== undefined;
+      return this.cookieUser !== undefined;
     },
   },
   actions: {
     async tryToConnectWithCookies() {
-      this.connectedUser = Cookies.get('user_polydate')
+      this.cookieUser = Cookies.get('user_polydate')
         ? (Cookies.get('user_polydate') as ILoginUser)
         : undefined;
+      this.token = Cookies.get('token_polydate')
+        ? (Cookies.get('token_polydate') as IToken)
+        : undefined;
 
-      console.log(this.connectedUser);
+      console.log(this.cookieUser);
     },
 
     async saveUserToDataBase(newUser: IAddNewUser) {
@@ -79,32 +84,52 @@ export const useAuthStore = defineStore('Auth', {
     },
 
     async loginUser(user: ILoginUser) {
-      const loginUser = await axios.post(
-        'http://localhost:8090/auth/login',
-        user,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      try {
+        const loginUser = await axios.post(
+          'http://localhost:8090/auth/login',
+          user,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        this.cookieUser = {
+          userId: loginUser.data.user.userId,
+          userFirstname: loginUser.data.user.userFirstname,
+          userEmail: loginUser.data.user.userEmail,
+        };
+
+        if (loginUser.status === 200) {
+          Cookies.set('token', loginUser.data.token, {
+            secure: false,
+            sameSite: 'Lax',
+            expires: '3h 5m',
+          });
+
+          Cookies.set('user_polydate', JSON.stringify(this.cookieUser), {
+            secure: false,
+            sameSite: 'Lax',
+            expires: '3h 5m',
+          });
+
+          this.router.push({ path: '/home' });
         }
-      );
+      } catch (error: any) {
+        console.log(error);
+      }
+    },
 
-      if (loginUser.status === 200) {
-        Cookies.set('token_polydate', loginUser.data.token, {
-          secure: true,
-          sameSite: 'Strict',
-          expires: '3h 5m',
-        });
-
-        Cookies.set('user_polydate', loginUser.data.user, {
-          secure: true,
-          sameSite: 'Strict',
-          expires: '3h 5m',
-        });
-
-        this.connectedUser = loginUser.data.token;
-
-        this.router.push({ path: '/home' });
+    async logoutUser() {
+      try {
+        Cookies.remove('token_polydate');
+        Cookies.remove('user_polydate');
+        this.cookieUser = undefined;
+        this.token = undefined;
+        this.router.push({ path: '/login' });
+      } catch (error) {
+        console.log(error);
       }
     },
   },

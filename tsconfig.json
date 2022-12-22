@@ -1,9 +1,14 @@
 {
   "extends": "@quasar/app-webpack/tsconfig-preset",
   "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
     "target": "es6",
+    "esModuleInterop": true,
+    "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "baseUrl": "."
+    "baseUrl": "./"
   }
 }
