@@ -1,5 +1,4 @@
 <script lang="ts">
-import { useUserStore } from 'src/stores/userStore';
 import { defineComponent, ref } from 'vue';
 export default defineComponent({});
 </script>
@@ -41,8 +40,6 @@ const emit = defineEmits<{
   (e: 'updateUserInformation'): void;
 }>();
 
-const userStore = useUserStore();
-const user = userStore.connectedUser;
 const profilUpdated = ref(false);
 
 const updateUserInformation = async () => {

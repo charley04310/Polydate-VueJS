@@ -28,7 +28,7 @@ export const useUserStore = defineStore('User', {
         } else {
           this.connectedUser = undefined;
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log(error);
       }
     },
@@ -50,7 +50,43 @@ export const useUserStore = defineStore('User', {
         } else {
           this.connectedUser = undefined;
         }
-      } catch (error: any) {
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async addUserImage(image: File) {
+      try {
+        const url = `http://localhost:8090/images/upload/${authStore.cookieUser?.userId}`;
+        const formData = new FormData();
+        formData.append('image', image);
+        const updateUser = await axios.post(url, formData, {
+          withCredentials: true,
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Cookie: authStore.token,
+          },
+        });
+
+        console.log(updateUser);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getUserImage() {
+      try {
+        const url = `http://localhost:8090/images/${authStore.cookieUser?.userId}`;
+        const updateUser = await axios.get(url, {
+          withCredentials: true,
+          headers: {
+            'Content-type': 'application/json',
+            Cookie: authStore.token,
+          },
+        });
+
+        console.log(updateUser);
+      } catch (error) {
         console.log(error);
       }
     },

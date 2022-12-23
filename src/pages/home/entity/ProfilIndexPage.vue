@@ -1,5 +1,5 @@
 <script lang="ts">
-import QImageUser from 'src/components/image/QImageUser.vue';
+import QcardImageUser from 'src/components/image/QcardImageUser.vue';
 import QInputFIrstName from 'src/components/input/QInputFIrstName.vue';
 import QInputLastName from 'src/components/input/QInputLastName.vue';
 import QInputCity from 'src/components/input/QInputCity.vue';
@@ -18,7 +18,7 @@ import { useAuthStore } from 'src/stores/authStore'; */
 </script>
 <template>
   <h1 class="text-h4 text-white text-bold">
-    BIENVENU {{ user?.userFirstname }}
+    BIENVENU {{ userStore.connectedUser?.userFirstname }}
   </h1>
 
   <div class="row justify-between q-mt-lg">
@@ -37,6 +37,7 @@ import { useAuthStore } from 'src/stores/authStore'; */
           <q-btn
             color="primary"
             @click="userEditProfil"
+            cursor="pointer"
             :label="editMyProfil ? 'Modifier mes informations' : 'Annuler'"
           />
           <q-btn
@@ -70,7 +71,7 @@ import { useAuthStore } from 'src/stores/authStore'; */
       />
       <QInputUniversite
         v-model="userProfil.userSchoolId"
-        :disable="editMyProfil"
+        :disable="true"
         class="bg-white"
       />
 
@@ -150,8 +151,8 @@ import { useAuthStore } from 'src/stores/authStore'; */
         class="bg-white"
       />
     </q-card>
+
     <q-card flat square class="col-12 q-pa-lg q-gutter-y-md">
-      <q-separator color="secondary" size="3px" />
       <q-item>
         <q-item-section avatar>
           <q-icon name="image" color="secondary" />
@@ -161,7 +162,42 @@ import { useAuthStore } from 'src/stores/authStore'; */
           <q-item-label>Vos images</q-item-label>
         </q-item-section>
       </q-item>
-      <QImageUser />
+
+      <q-card class="my-card" flat bordered>
+        <q-card-section horizontal>
+          <q-card-section>
+            <q-file
+              v-model="image"
+              color="white"
+              outlined
+              label="ajouter une image"
+              @update:model-value="uploadImageCard"
+              :input-style="{
+                width: '120px',
+                height: '20px',
+              }"
+            >
+              <template v-slot:prepend>
+                <q-icon class="q-pl-xs" name="add_a_photo" />
+              </template>
+
+              >
+            </q-file>
+          </q-card-section>
+
+          <q-btn @click="addUserImage" color="red" icon="add">
+            <q-tooltip>Ajouter une image</q-tooltip>
+          </q-btn>
+          <q-btn flat color="teal" icon="delete">
+            <q-tooltip>Annuler l'image</q-tooltip>
+          </q-btn>
+        </q-card-section>
+      </q-card>
+    </q-card>
+    <q-card flat square class="col-12 q-pa-lg q-gutter-y-md">
+      <slot v-if="imageUrl">
+        <QcardImageUser v-if="imageUrl" :src="imageUrl" />
+      </slot>
     </q-card>
   </div>
 </template>
@@ -172,12 +208,25 @@ const editMyProfil = ref(true);
 const userStore = useUserStore();
 const user = userStore.connectedUser;
 
+const image = ref(null);
+const imageUrl = ref('http://localhost:8090/images/user/72_1671764407040.jpg');
+
+const uploadImageCard = () => {
+  console.log(image.value);
+  if (image.value) {
+    imageUrl.value = URL.createObjectURL(image.value);
+  }
+};
+const addUserImage = async () => {
+  if (!image.value) return;
+  await userStore.addUserImage(image.value);
+};
 const userProfil = ref<ICreateOrEditUser>({
   userFirstname: '',
   userLastname: '',
   userCity: 'Montpellier',
   userGenreId: user?.userGenreId || 1,
-  userSchoolId: '',
+  userSchoolId: userStore.connectedUser?.userSchoolId,
   userEmail: '',
   userPassword: '',
   userIciPourId: '',
@@ -205,16 +254,8 @@ const userEditProfil = () => {
 
 watch(userStore, (store) => {
   if (store.connectedUser != undefined) {
-    let user = store.connectedUser;
-    userProfil.value.userFirstname = user?.userFirstname;
-    userProfil.value.userLastname = user?.userLastname;
-    userProfil.value.userCity = user?.userCity;
-    userProfil.value.userSchoolId = user?.userSchoolId;
-    selection.value = [user?.userGenreId];
-    userProfil.value.userEmail = user?.userEmail;
-    userProfil.value.userPassword = user?.userPassword;
-    userProfil.value.userIciPourId = user?.userIciPourId;
-    userProfil.value.userDescription = user?.userDescription;
+    userProfil.value = store.connectedUser;
+    selection.value = [store.connectedUser?.userGenreId];
   }
 });
 

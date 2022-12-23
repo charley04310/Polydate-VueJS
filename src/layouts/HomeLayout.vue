@@ -40,9 +40,9 @@
                 </q-avatar>
               </q-item-section>
 
-              <q-item-section class="text-weight-bolder">{{
-                userName
-              }}</q-item-section>
+              <q-item-section class="text-weight-bolder">
+                {{ userStore.connectedUser?.userFirstname }}
+              </q-item-section>
             </q-item>
 
             <q-item clickable @click="this.$router.push('/')">
@@ -87,10 +87,11 @@
 </template>
 <script setup lang="ts">
 import DialogConfirmLogOut from 'src/components/navigation/DialogConfirmLogOut.vue';
-import { useAuthStore } from 'src/stores/authStore';
+import { useUserStore } from 'src/stores/userStore';
 import { ref } from 'vue';
-const authStore = useAuthStore();
-const userName = ref(authStore.connectedUser?.userFirstname);
+
+const userStore = useUserStore();
+
 const confirm = ref(false);
 /* const authStore = useAuthStore(); */
 const drawer = ref(false);

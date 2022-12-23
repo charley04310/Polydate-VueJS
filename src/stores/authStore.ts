@@ -17,7 +17,7 @@ export interface ICreateOrEditUser {
   userFirstname: string;
   userLastname: string;
   userCity: string;
-  userSchoolId: number | string;
+  userSchoolId?: number;
   userGenreId: number;
   userEmail: string;
   userPassword?: string;
@@ -46,7 +46,6 @@ export interface IToken {
 export const useAuthStore = defineStore('Auth', {
   state: () => ({
     isNewUser: false,
-    connectedUser: undefined as ICreateOrEditUser | undefined,
     cookieUser: undefined as ICookieUser | undefined,
     token: undefined as IToken | undefined,
   }),
@@ -82,10 +81,11 @@ export const useAuthStore = defineStore('Auth', {
         if (addUser.status === 200) {
           this.isNewUser = true;
         }
-      } catch (error: any) {
-        for (let i = 0; i < error.response.data.length; i++) {
+      } catch (error) {
+        console.log(error);
+        /*     for (let i = 0; i < error.response.data.length; i++) {
           console.log(error.response.data[i].property);
-        }
+        } */
       }
     },
 
@@ -122,7 +122,7 @@ export const useAuthStore = defineStore('Auth', {
 
           this.router.push({ path: '/home' });
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log(error);
       }
     },
