@@ -9,19 +9,15 @@ import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import DialogConfirmEditUser from 'src/components/dialog/DialogConfirmEditUser.vue';
-import { onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
-import { ICreateOrEditUser } from 'src/stores/authStore';
-
-/* import { onBeforeMount, ref, watch } from 'vue';
-import { useAuthStore } from 'src/stores/authStore'; */
 </script>
 <template>
   <h1 class="text-h4 text-white text-bold">
     BIENVENU {{ userStore.connectedUser?.userFirstname }}
   </h1>
 
-  <div class="row justify-between q-mt-lg">
+  <div v-if="userProfil" class="row justify-between q-mt-lg">
     <q-card flat square class="col-6 q-pa-lg q-gutter-y-md">
       <div class="row justify-between">
         <q-item>
@@ -160,6 +156,9 @@ import { useAuthStore } from 'src/stores/authStore'; */
 
         <q-item-section>
           <q-item-label>Vos images</q-item-label>
+          <q-item-label v-if="succesImageUploaded" style="color: green"
+            >Image ajoutée avec succès !</q-item-label
+          >
         </q-item-section>
       </q-item>
 
@@ -170,6 +169,7 @@ import { useAuthStore } from 'src/stores/authStore'; */
               v-model="image"
               color="white"
               outlined
+              filled
               label="ajouter une image"
               @update:model-value="uploadImageCard"
               :input-style="{
@@ -185,32 +185,59 @@ import { useAuthStore } from 'src/stores/authStore'; */
             </q-file>
           </q-card-section>
 
-          <q-btn @click="addUserImage" color="red" icon="add">
+          <q-btn
+            @click="addUserImage"
+            :disable="image == null"
+            text-color="primary"
+            flat
+            square
+            icon="add"
+          >
             <q-tooltip>Ajouter une image</q-tooltip>
           </q-btn>
-          <q-btn flat color="teal" icon="delete">
+          <q-btn
+            @click="deleteImageBeforeUplaoad()"
+            :disable="image == null"
+            square
+            flat
+            icon="delete"
+          >
             <q-tooltip>Annuler l'image</q-tooltip>
           </q-btn>
         </q-card-section>
       </q-card>
     </q-card>
     <q-card flat square class="col-12 q-pa-lg q-gutter-y-md">
-      <slot v-if="imageUrl">
-        <QcardImageUser v-if="imageUrl" :src="imageUrl" />
+      <slot v-if="userImage != undefined">
+        <div class="row justify-start q-mt-lg q-gutter-x-sm">
+          <QcardImageUser
+            v-for="image in userImage"
+            class="col-2"
+            :key="image.imageId"
+            :src="`http://localhost:8090/images/user/${image.imageLink}`"
+          />
+        </div>
       </slot>
     </q-card>
   </div>
 </template>
 <script setup lang="ts">
 const confirmDialogIsOpen = ref(false);
+const succesImageUploaded = ref(false);
 //const authStore = useAuthStore();
 const editMyProfil = ref(true);
 const userStore = useUserStore();
-const user = userStore.connectedUser;
 
 const image = ref(null);
 const imageUrl = ref('http://localhost:8090/images/user/72_1671764407040.jpg');
 
+onBeforeMount(() => {
+  userStore.getUserInformation();
+  userStore.getUserImage();
+});
+const deleteImageBeforeUplaoad = () => {
+  image.value = null;
+};
 const uploadImageCard = () => {
   console.log(image.value);
   if (image.value) {
@@ -220,21 +247,21 @@ const uploadImageCard = () => {
 const addUserImage = async () => {
   if (!image.value) return;
   await userStore.addUserImage(image.value);
+  image.value = null;
+  succesImageUploaded.value = true;
+  setTimeout(() => {
+    succesImageUploaded.value = false;
+  }, 2000);
+
+  userStore.getUserInformation();
+  userStore.getUserImage();
 };
-const userProfil = ref<ICreateOrEditUser>({
-  userFirstname: '',
-  userLastname: '',
-  userCity: 'Montpellier',
-  userGenreId: user?.userGenreId || 1,
-  userSchoolId: userStore.connectedUser?.userSchoolId,
-  userEmail: '',
-  userPassword: '',
-  userIciPourId: '',
-  userDescription: '',
+const userImage = computed(() => {
+  return userStore.userImages;
 });
 
-onBeforeMount(() => {
-  userStore.getUserInformation();
+const userProfil = computed(() => {
+  return userStore.connectedUser;
 });
 
 const updateUserInformation = async () => {
@@ -246,7 +273,7 @@ const updateUserInformation = async () => {
   console.log(userProfil.value);
 };
 
-const selection = ref([userProfil.value.userGenreId]);
+const selection = ref([userProfil.value?.userGenreId]);
 
 const userEditProfil = () => {
   editMyProfil.value = !editMyProfil.value;
@@ -254,17 +281,26 @@ const userEditProfil = () => {
 
 watch(userStore, (store) => {
   if (store.connectedUser != undefined) {
-    userProfil.value = store.connectedUser;
     selection.value = [store.connectedUser?.userGenreId];
   }
 });
 
 watch(selection, (newSelection) => {
-  userProfil.value.userGenreId = selection.value[0];
+  if (
+    userProfil.value?.userGenreId != undefined &&
+    selection.value[0] != undefined
+  ) {
+    userProfil.value.userGenreId = selection.value[0];
+  }
 
   if (newSelection.length > 1) {
-    userProfil.value.userGenreId = newSelection[1];
-    selection.value = [newSelection[1]];
+    if (
+      userProfil.value?.userGenreId != undefined &&
+      newSelection[1] != undefined
+    ) {
+      userProfil.value.userGenreId = newSelection[1];
+      selection.value = [newSelection[1]];
+    }
   }
 });
 </script>

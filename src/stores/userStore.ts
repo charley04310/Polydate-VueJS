@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { ICreateOrEditUser, useAuthStore } from './authStore';
+import { ICreateOrEditUser, IUserImages, useAuthStore } from './authStore';
 
 const authStore = useAuthStore();
 
 export const useUserStore = defineStore('User', {
   state: () => ({
     connectedUser: undefined as ICreateOrEditUser | undefined,
+    userImages: undefined as IUserImages[] | undefined,
   }),
   getters: {},
   actions: {
@@ -23,12 +24,17 @@ export const useUserStore = defineStore('User', {
         });
 
         if (loginUser.status === 200) {
-          console.log(loginUser.data);
+          // console.log(loginUser.data);
           this.connectedUser = loginUser.data;
+
+          if (loginUser.data.__images__.length > 0) {
+            this.userImages = loginUser.data.__images__;
+          }
         } else {
           this.connectedUser = undefined;
         }
       } catch (error) {
+        this.connectedUser = undefined;
         console.log(error);
       }
     },
@@ -51,6 +57,8 @@ export const useUserStore = defineStore('User', {
           this.connectedUser = undefined;
         }
       } catch (error) {
+        this.connectedUser = undefined;
+
         console.log(error);
       }
     },
@@ -76,8 +84,8 @@ export const useUserStore = defineStore('User', {
 
     async getUserImage() {
       try {
-        const url = `http://localhost:8090/images/${authStore.cookieUser?.userId}`;
-        const updateUser = await axios.get(url, {
+        const url = `http://localhost:8090/images/user/${authStore.cookieUser?.userId}`;
+        const imageUser = await axios.get(url, {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
@@ -85,7 +93,7 @@ export const useUserStore = defineStore('User', {
           },
         });
 
-        console.log(updateUser);
+        console.log(imageUser);
       } catch (error) {
         console.log(error);
       }

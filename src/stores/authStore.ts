@@ -25,6 +25,13 @@ export interface ICreateOrEditUser {
   userDescription: string;
 }
 
+export interface IUserImages {
+  imageId: number;
+  imageDate: string;
+  imageUserId: number;
+  imageLink: string;
+}
+
 export interface ICookieUser {
   userId: number;
   userFirstname: string;
@@ -63,7 +70,7 @@ export const useAuthStore = defineStore('Auth', {
         ? (Cookies.get('token_polydate') as IToken)
         : undefined;
 
-      console.log(this.cookieUser);
+      //console.log(this.cookieUser);
     },
 
     async saveUserToDataBase(newUser: IAddNewUser) {

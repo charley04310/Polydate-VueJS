@@ -33,7 +33,7 @@
                 icon="menu"
               />
             </q-item>
-            <q-item clickable @click="this.$router.push('home/profil')">
+            <q-item clickable to="/profil">
               <q-item-section avatar>
                 <q-avatar>
                   <img src="https://cdn.quasar.dev/img/avatar.png" />
@@ -45,13 +45,13 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable @click="this.$router.push('/')">
+            <q-item clickable to="/home">
               <q-item-section avatar>
                 <q-icon name="feed" color="secondary" />
               </q-item-section>
 
               <q-item-section class="text-weight-bolder">
-                POLY-FEED</q-item-section
+                POLY-DATE</q-item-section
               >
             </q-item>
 
@@ -62,6 +62,26 @@
 
               <q-item-section class="text-weight-bolder">
                 POLY-MATCHS</q-item-section
+              >
+            </q-item>
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="sports_bar" color="secondary" />
+              </q-item-section>
+
+              <q-item-section class="text-weight-bolder">
+                POLY-PARTIES</q-item-section
+              >
+            </q-item>
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="supervisor_account" color="secondary" />
+              </q-item-section>
+
+              <q-item-section class="text-weight-bolder">
+                TOUS LES UTILISATEURS</q-item-section
               >
             </q-item>
 

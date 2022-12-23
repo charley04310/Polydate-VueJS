@@ -19,13 +19,18 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('src/pages/home/IndexHome.vue'),
       },
+    ],
+  },
+  {
+    path: '/profil',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [
       {
-        path: 'profil',
+        path: '',
         component: () => import('src/pages/home/entity/ProfilIndexPage.vue'),
       },
     ],
   },
-
   // Always leave this as last one,
   // but you can also remove it
   {
