@@ -8,6 +8,9 @@ export const useUserStore = defineStore('User', {
   state: () => ({
     connectedUser: undefined as ICreateOrEditUser | undefined,
     userImages: undefined as IUserImages[] | undefined,
+    userFeed: undefined as ICreateOrEditUser | undefined,
+    userFeedImages: undefined as IUserImages[] | undefined,
+    userGenreToFind: undefined as number | undefined,
   }),
   getters: {},
   actions: {
@@ -26,6 +29,13 @@ export const useUserStore = defineStore('User', {
         if (loginUser.status === 200) {
           // console.log(loginUser.data);
           this.connectedUser = loginUser.data;
+
+          // considerant que la majorité est
+          if (loginUser.data.userGenreId === 1) {
+            this.userGenreToFind = 2;
+          } else {
+            this.userGenreToFind = 1;
+          }
 
           if (loginUser.data.__images__.length > 0) {
             this.userImages = loginUser.data.__images__;
@@ -82,10 +92,10 @@ export const useUserStore = defineStore('User', {
       }
     },
 
-    async getUserImage() {
+    async deleteUserImage(imageLink: string) {
       try {
-        const url = `http://localhost:8090/images/user/${authStore.cookieUser?.userId}`;
-        const imageUser = await axios.get(url, {
+        const url = imageLink;
+        const imageUser = await axios.delete(url, {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
@@ -94,6 +104,69 @@ export const useUserStore = defineStore('User', {
         });
 
         console.log(imageUser);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async addOrUpdateProfileImage() {
+      try {
+        const url = 'http://localhost:8090/api/user/image';
+        const updateImageUser = await axios.put(
+          url,
+          { userImageLink: 'imageLink' },
+          {
+            withCredentials: true,
+            headers: {
+              'Content-type': 'application/json',
+              Cookie: authStore.token,
+            },
+          }
+        );
+        console.log(updateImageUser);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getRandomUserBygenre(genre: number) {
+      try {
+        const url = `http://localhost:8090/api/user/feed/${genre}/${authStore.cookieUser?.userId}`;
+        const randomUser = await axios.get(url, {
+          withCredentials: true,
+          headers: {
+            'Content-type': 'application/json',
+            Cookie: authStore.token,
+          },
+        });
+
+        this.userFeed = randomUser.data;
+        console.log(randomUser.data.__images__);
+        if (randomUser.data.__images__.length > 0) {
+          this.userFeedImages = randomUser.data.__images__;
+        } else {
+          this.userFeedImages = undefined;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async likeUser(type: number) {
+      try {
+        const url = 'http://localhost:8090/match/start';
+        const match = await axios.post(
+          url,
+          { matchDstId: this.userFeed?.userId, matchTypeId: type },
+          {
+            withCredentials: true,
+            headers: {
+              'Content-type': 'application/json',
+              Cookie: authStore.token,
+            },
+          }
+        );
+        return match;
       } catch (error) {
         console.log(error);
       }

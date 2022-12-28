@@ -1,6 +1,8 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { ref } from 'vue';
 import QItemCard from 'src/components/card/QItemCard.vue';
+import { useUserStore } from 'src/stores/userStore';
 export default defineComponent({});
 </script>
 
@@ -16,24 +18,51 @@ export default defineComponent({});
       class="shadow-14"
       ref="carousel"
     >
-      <q-carousel-slide
-        name="first"
-        img-src="https://cdn.quasar.dev/img/mountains.jpg"
-      >
-        <div class="absolute-bottom custom-caption">
-          <div class="text-h5">Dua Lipa</div>
-          <div class="text-subtitle1">
-            <q-icon
-              color="white"
-              style="padding-right: 3px"
-              name="school"
-              size="sm"
-            />
-
-            Polytech Montpellier
+      <slot v-if="userImage !== undefined">
+        <q-carousel-slide
+          v-for="(image, index) in userImage"
+          :key="index"
+          :name="index"
+          :img-src="`http://localhost:8090/images/user/${image.imageLink}`"
+        >
+          <div class="absolute-bottom custom-caption">
+            <div class="text-h5">
+              {{ user?.userFirstname }} {{ user?.userLastname }}
+            </div>
+            <div class="text-subtitle1">
+              <q-icon
+                color="white"
+                style="padding-right: 3px"
+                name="school"
+                size="sm"
+              />
+              {{ userSchool }}
+            </div>
           </div>
-        </div>
-      </q-carousel-slide>
+        </q-carousel-slide>
+      </slot>
+
+      <slot v-else>
+        <q-carousel-slide
+          name="first"
+          img-src="https://placeimg.com/500/300/nature"
+        >
+          <div class="absolute-bottom custom-caption">
+            <div class="text-h5">
+              {{ user?.userFirstname }} {{ user?.userLastname }}
+            </div>
+            <div class="text-subtitle1">
+              <q-icon
+                color="white"
+                style="padding-right: 3px"
+                name="school"
+                size="sm"
+              />
+              {{ userSchool }}
+            </div>
+          </div>
+        </q-carousel-slide>
+      </slot>
     </q-carousel>
     <q-card-section>
       <q-avatar
@@ -51,9 +80,31 @@ export default defineComponent({});
   </q-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+const userStore = useUserStore();
+const user = computed(() => {
+  return userStore.userFeed;
+});
 
-const slide = ref('first');
+const userImage = computed(() => {
+  console.log(userStore.userFeedImages);
+  return userStore.userFeedImages;
+});
+
+const userSchool = computed(() => {
+  switch (userStore.userFeed?.userSchoolId) {
+    case 1:
+      return 'Université Paul Valéry III Montpellier';
+    case 2:
+      return 'Universite des sciences Montpellier';
+
+    case 3:
+      return 'Université de Medcine Montpellier';
+
+    default:
+      return 'Ecole maternelle';
+  }
+});
+const slide = ref(0);
 </script>
 
 <style lang="css">

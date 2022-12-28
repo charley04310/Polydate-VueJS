@@ -36,12 +36,17 @@
             <q-item clickable to="/profil">
               <q-item-section avatar>
                 <q-avatar>
-                  <img src="https://cdn.quasar.dev/img/avatar.png" />
+                  <img
+                    v-if="userImage !== undefined"
+                    :src="`http://localhost:8090/images/user/${userImage[0].imageLink}`"
+                  />
+
+                  <img v-else src="https://cdn.quasar.dev/img/avatar.png" />
                 </q-avatar>
               </q-item-section>
 
               <q-item-section class="text-weight-bolder">
-                {{ userStore.connectedUser?.userFirstname }}
+                {{ userName }}
               </q-item-section>
             </q-item>
 
@@ -108,9 +113,17 @@
 <script setup lang="ts">
 import DialogConfirmLogOut from 'src/components/navigation/DialogConfirmLogOut.vue';
 import { useUserStore } from 'src/stores/userStore';
-import { ref } from 'vue';
-
+import { computed, onBeforeMount, ref } from 'vue';
+const userImage = computed(() => {
+  return userStore.userImages;
+});
+onBeforeMount(() => {
+  userStore.getUserInformation();
+});
 const userStore = useUserStore();
+const userName = computed(() => {
+  return userStore.connectedUser?.userFirstname;
+});
 
 const confirm = ref(false);
 /* const authStore = useAuthStore(); */

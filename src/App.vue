@@ -1,13 +1,15 @@
+<script lang="ts">
+import { onBeforeMount } from 'vue';
+import { useAuthStore } from './stores/authStore';
+</script>
+
 <template>
   <router-view />
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-import { useAuthStore } from './stores/authStore';
-
-onBeforeMount(() => {
+onBeforeMount(async () => {
   const authStore = useAuthStore();
-  authStore.tryToConnectWithCookies();
+  await authStore.tryToConnectWithCookies();
 });
 </script>

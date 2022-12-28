@@ -9,6 +9,8 @@ import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import DialogConfirmEditUser from 'src/components/dialog/DialogConfirmEditUser.vue';
+import DialogDeleteImage from 'src/components/dialog/DialogConfirmDeleteImage.vue';
+
 import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 </script>
@@ -159,6 +161,9 @@ import { useUserStore } from 'src/stores/userStore';
           <q-item-label v-if="succesImageUploaded" style="color: green"
             >Image ajoutée avec succès !</q-item-label
           >
+          <q-item-label v-if="errorImageUploaded" style="color: red"
+            >Taille de l'image est trop grande!</q-item-label
+          >
         </q-item-section>
       </q-item>
 
@@ -171,6 +176,7 @@ import { useUserStore } from 'src/stores/userStore';
               outlined
               filled
               label="ajouter une image"
+              accept=".jpg, .png, image/*"
               @update:model-value="uploadImageCard"
               :input-style="{
                 width: '120px',
@@ -193,7 +199,7 @@ import { useUserStore } from 'src/stores/userStore';
             square
             icon="add"
           >
-            <q-tooltip>Ajouter une image</q-tooltip>
+            <q-tooltip>Enregistrer</q-tooltip>
           </q-btn>
           <q-btn
             @click="deleteImageBeforeUplaoad()"
@@ -212,9 +218,21 @@ import { useUserStore } from 'src/stores/userStore';
         <div class="row justify-start q-mt-lg q-gutter-x-sm">
           <QcardImageUser
             v-for="image in userImage"
+            @openDialogdeleteUserImage="
+              openDialogDeleteImage(
+                `http://localhost:8090/images/user/${image.imageLink}`
+              )
+            "
+            @AddAsProfilImage="addOrUpdateProfilImage()"
             class="col-2"
             :key="image.imageId"
             :src="`http://localhost:8090/images/user/${image.imageLink}`"
+          />
+
+          <DialogDeleteImage
+            @deleteUserImage="deleteUserImage(imgToDelete)"
+            v-model="dialogDeleteImageIsOpen"
+            :src="imgToDelete"
           />
         </div>
       </slot>
@@ -224,17 +242,45 @@ import { useUserStore } from 'src/stores/userStore';
 <script setup lang="ts">
 const confirmDialogIsOpen = ref(false);
 const succesImageUploaded = ref(false);
+const dialogDeleteImageIsOpen = ref(false);
 //const authStore = useAuthStore();
 const editMyProfil = ref(true);
 const userStore = useUserStore();
-
+const errorImageUploaded = ref(false);
 const image = ref(null);
-const imageUrl = ref('http://localhost:8090/images/user/72_1671764407040.jpg');
+const imageUrl = ref('');
 
+const imgToDelete = ref('');
 onBeforeMount(() => {
-  userStore.getUserInformation();
-  userStore.getUserImage();
+  updateUserProfil();
 });
+/* const onRejected = () => {
+  errorImageUploaded.value = true;
+
+  setTimeout(() => {
+    errorImageUploaded.value = false;
+  }, 3000);
+}; */
+const updateUserProfil = async () => {
+  userStore.getUserInformation();
+  //  userStore.getUserImage();
+};
+
+const deleteUserImage = async (imageLink: string) => {
+  await userStore.deleteUserImage(imageLink);
+
+  updateUserProfil();
+};
+
+const addOrUpdateProfilImage = async () => {
+  await userStore.addOrUpdateProfileImage();
+  updateUserProfil();
+};
+
+const openDialogDeleteImage = (imageLink: string) => {
+  dialogDeleteImageIsOpen.value = true;
+  imgToDelete.value = imageLink;
+};
 const deleteImageBeforeUplaoad = () => {
   image.value = null;
 };
@@ -253,8 +299,7 @@ const addUserImage = async () => {
     succesImageUploaded.value = false;
   }, 2000);
 
-  userStore.getUserInformation();
-  userStore.getUserImage();
+  updateUserProfil();
 };
 const userImage = computed(() => {
   return userStore.userImages;
@@ -270,7 +315,6 @@ const updateUserInformation = async () => {
   if (isUpdated != undefined) {
     userStore.getUserInformation();
   }
-  console.log(userProfil.value);
 };
 
 const selection = ref([userProfil.value?.userGenreId]);

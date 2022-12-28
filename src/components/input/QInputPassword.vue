@@ -11,8 +11,6 @@ export default defineComponent({});
       input-style="min-width: 450px"
       class="q-mx-none"
       type="password"
-      outlined
-      filled
       label="Mot de passe"
     />
   </div>

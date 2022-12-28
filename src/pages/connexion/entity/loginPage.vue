@@ -8,7 +8,7 @@
 
     <div class="q-gutter-y-md q-mt-sm">
       <QInputMail v-model="userLogin.userEmail" />
-      <QInputPassword v-model="userLogin.userPassword" />
+      <QInputPassword filled v-model="userLogin.userPassword" />
     </div>
 
     <div class="column q-gutter-y-md q-mt-sm text-secondary">
