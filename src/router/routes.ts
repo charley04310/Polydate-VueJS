@@ -7,17 +7,18 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('src/pages/connexion/page/IndexPage.vue'),
+        component: () =>
+          import('src/pages/connexion/page/IndexConnexionPage.vue'),
       },
     ],
   },
   {
-    path: '/home',
+    path: '/polydate',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
       {
         path: '',
-        component: () => import('src/pages/home/IndexHome.vue'),
+        component: () => import('src/pages/polydate/IndexPolydatePage.vue'),
       },
     ],
   },
@@ -27,7 +28,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('src/pages/home/entity/ProfilIndexPage.vue'),
+        component: () => import('src/pages/profil/ProfilEditPage.vue'),
       },
     ],
   },

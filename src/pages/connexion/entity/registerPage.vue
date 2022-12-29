@@ -6,12 +6,13 @@ import QInputMail from 'src/components/input/QInputMail.vue';
 import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 import QInputUniversite from 'src/components/input/QSelectSchool.vue';
+import { useUserStore } from 'src/stores/userStore';
 </script>
 
 <template>
   <div class="q-gutter-y-md container-register">
     <h1
-      v-if="!authStore.isNewUser"
+      v-if="isCreated === undefined"
       class="text-h3 q-ma-none text-center text-white"
     >
       CRÉER UN COMPTE
@@ -200,7 +201,7 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 
       <q-step :name="3" title="" icon="add_comment" :header-nav="step > 3">
         <q-card
-          v-if="authStore.isNewUser"
+          v-if="isCreated"
           flat
           class="text-black q-gutter-y-sm"
           style="min-width: 450px"
@@ -208,12 +209,22 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
           <q-card-section class="q-pa-lg">
             <q-item>
               <q-item-section avatar>
-                <q-icon name="celebration" color="green" size="2em" />
+                <q-icon
+                  :name="messageError ? 'error' : 'celebration'"
+                  :color="messageError ? 'red' : 'green'"
+                  size="2em"
+                />
               </q-item-section>
 
-              <q-item-section>
+              <q-item-section v-if="!messageError">
                 <q-item-label>
                   Félicitation votre compte a bien été créé
+                </q-item-label>
+              </q-item-section>
+
+              <q-item-section v-if="messageError">
+                <q-item-label>
+                  Il semblerait qu'un problème soit survenu
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -223,14 +234,14 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
               class="q-mx-none"
               color="accent"
               text-color="white"
-              label="Je commence à charo"
+              label="Je commence à dater"
               @click="emit('loginPage')"
             />
           </q-card-actions>
         </q-card>
 
         <q-card
-          v-if="!authStore.isNewUser"
+          v-if="isCreated === undefined"
           flat
           class="text-black q-gutter-y-sm"
         >
@@ -252,7 +263,7 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
           <QInputDescription v-model="newUser.userDescription" />
         </q-card>
 
-        <q-stepper-navigation v-if="!authStore.isNewUser">
+        <q-stepper-navigation v-if="isCreated === undefined">
           <q-btn
             @click="createNewUser(newUser)"
             :disable="
@@ -296,18 +307,24 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 <script setup lang="ts">
 //import { Todo } from 'src/components/models';
 import { watch, ref, computed } from 'vue';
-import { ICreateOrEditUser, useAuthStore } from 'src/stores/authStore';
+import { ICreateOrEditUser } from 'src/stores/authStore';
 
 const loading = ref(false);
-const authStore = useAuthStore();
+const userStore = useUserStore();
+const isCreated = ref<boolean | undefined>(undefined);
+const messageError = ref(false);
 
 const createNewUser = async (newUser: ICreateOrEditUser) => {
   // we set loading state
   loading.value = true;
-  setTimeout(() => {
-    authStore.saveUserToDataBase(newUser);
+
+  setTimeout(async () => {
     loading.value = false;
-  }, 1000);
+    isCreated.value = await userStore.saveUserToDataBase(newUser);
+    if (!isCreated.value) {
+      messageError.value = true;
+    }
+  }, 2000);
 };
 
 const newUser = ref<ICreateOrEditUser>({

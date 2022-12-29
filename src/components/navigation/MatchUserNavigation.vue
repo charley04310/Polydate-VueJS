@@ -1,6 +1,8 @@
 <script lang="ts">
 import { useUserStore } from 'src/stores/userStore';
 import { computed, defineComponent } from 'vue';
+import { useQuasar } from 'quasar';
+import { usePolydateStore } from 'src/stores/polydateStore';
 export default defineComponent({});
 </script>
 <template>
@@ -51,16 +53,17 @@ export default defineComponent({});
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
 const $q = useQuasar();
 
 const userStore = useUserStore();
+const polydateStore = usePolydateStore();
+
 const genreToFetch = computed(() => {
-  return userStore.userGenreToFind;
+  return userStore.sexualOrientation;
 });
 
 const matchWithUser = async (matchType: number) => {
-  const match = await userStore.likeUser(matchType);
+  const match = await polydateStore.likeUser(matchType);
   if (match) {
     $q.notify({
       message: 'Match Correctement envoyé !',
@@ -82,6 +85,6 @@ const matchWithUser = async (matchType: number) => {
 
 const getRandomUser = () => {
   if (genreToFetch.value === undefined) return;
-  userStore.getRandomUserBygenre(genreToFetch.value);
+  polydateStore.getRandomUserBygenre(genreToFetch.value);
 };
 </script>

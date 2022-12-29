@@ -1,5 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+import { usePolydateStore } from 'src/stores/polydateStore';
+
 import { ref } from 'vue';
 import QItemCard from 'src/components/card/QItemCard.vue';
 import { useUserStore } from 'src/stores/userStore';
@@ -80,18 +82,19 @@ export default defineComponent({});
   </q-card>
 </template>
 <script setup lang="ts">
-const userStore = useUserStore();
+const usePolydate = usePolydateStore();
+
 const user = computed(() => {
-  return userStore.userFeed;
+  return usePolydate.userFeed;
 });
 
 const userImage = computed(() => {
-  console.log(userStore.userFeedImages);
-  return userStore.userFeedImages;
+  console.log(usePolydate.userFeedImages);
+  return usePolydate.userFeedImages;
 });
 
 const userSchool = computed(() => {
-  switch (userStore.userFeed?.userSchoolId) {
+  switch (usePolydate.userFeed?.userSchoolId) {
     case 1:
       return 'Université Paul Valéry III Montpellier';
     case 2:

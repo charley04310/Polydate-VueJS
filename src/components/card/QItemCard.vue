@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 import { computed } from 'vue';
+import { usePolydateStore } from 'src/stores/polydateStore';
 
 export default defineComponent({});
 </script>
@@ -41,13 +42,13 @@ export default defineComponent({});
   </q-item>
 </template>
 <script setup lang="ts">
-const userStore = useUserStore();
+const polydateStore = usePolydateStore();
 const user = computed(() => {
-  return userStore.userFeed;
+  return polydateStore.userFeed;
 });
 
 const userIciPour = computed(() => {
-  switch (userStore.userFeed?.userIciPourId) {
+  switch (polydateStore.userFeed?.userIciPourId) {
     case 1:
       return 'Une rencontre Amoureuse';
     case 2:

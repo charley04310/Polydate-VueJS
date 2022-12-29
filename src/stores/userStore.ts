@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { ICreateOrEditUser, IUserImages, useAuthStore } from './authStore';
+import {
+  IAddNewUser,
+  ICreateOrEditUser,
+  IUserImages,
+  useAuthStore,
+} from './authStore';
 
 const authStore = useAuthStore();
 
@@ -8,9 +13,7 @@ export const useUserStore = defineStore('User', {
   state: () => ({
     connectedUser: undefined as ICreateOrEditUser | undefined,
     userImages: undefined as IUserImages[] | undefined,
-    userFeed: undefined as ICreateOrEditUser | undefined,
-    userFeedImages: undefined as IUserImages[] | undefined,
-    userGenreToFind: undefined as number | undefined,
+    sexualOrientation: undefined as number | undefined,
   }),
   getters: {},
   actions: {
@@ -30,11 +33,11 @@ export const useUserStore = defineStore('User', {
           // console.log(loginUser.data);
           this.connectedUser = loginUser.data;
 
-          // considerant que la majorité est
+          // considerant que la majorité est heterosexuel
           if (loginUser.data.userGenreId === 1) {
-            this.userGenreToFind = 2;
+            this.sexualOrientation = 2;
           } else {
-            this.userGenreToFind = 1;
+            this.sexualOrientation = 1;
           }
 
           if (loginUser.data.__images__.length > 0) {
@@ -46,6 +49,29 @@ export const useUserStore = defineStore('User', {
       } catch (error) {
         this.connectedUser = undefined;
         console.log(error);
+      }
+    },
+
+    async saveUserToDataBase(newUser: IAddNewUser) {
+      try {
+        const addUser = await axios.post(
+          'http://localhost:8090/api/user',
+          newUser,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (addUser.status === 200) {
+          return true;
+        }
+      } catch (error) {
+        console.log(error);
+        /*     for (let i = 0; i < error.response.data.length; i++) {
+          console.log(error.response.data[i].property);
+        } */
       }
     },
 
@@ -124,49 +150,6 @@ export const useUserStore = defineStore('User', {
           }
         );
         console.log(updateImageUser);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async getRandomUserBygenre(genre: number) {
-      try {
-        const url = `http://localhost:8090/api/user/feed/${genre}/${authStore.cookieUser?.userId}`;
-        const randomUser = await axios.get(url, {
-          withCredentials: true,
-          headers: {
-            'Content-type': 'application/json',
-            Cookie: authStore.token,
-          },
-        });
-
-        this.userFeed = randomUser.data;
-        console.log(randomUser.data.__images__);
-        if (randomUser.data.__images__.length > 0) {
-          this.userFeedImages = randomUser.data.__images__;
-        } else {
-          this.userFeedImages = undefined;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async likeUser(type: number) {
-      try {
-        const url = 'http://localhost:8090/match/start';
-        const match = await axios.post(
-          url,
-          { matchDstId: this.userFeed?.userId, matchTypeId: type },
-          {
-            withCredentials: true,
-            headers: {
-              'Content-type': 'application/json',
-              Cookie: authStore.token,
-            },
-          }
-        );
-        return match;
       } catch (error) {
         console.log(error);
       }

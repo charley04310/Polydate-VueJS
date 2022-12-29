@@ -11,10 +11,11 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import DialogConfirmEditUser from 'src/components/dialog/DialogConfirmEditUser.vue';
 import DialogDeleteImage from 'src/components/dialog/DialogConfirmDeleteImage.vue';
 
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 </script>
 <template>
+  
   <h1 class="text-h4 text-white text-bold">
     BIENVENU {{ userStore.connectedUser?.userFirstname }}
   </h1>
@@ -251,9 +252,9 @@ const image = ref(null);
 const imageUrl = ref('');
 
 const imgToDelete = ref('');
-onBeforeMount(() => {
+/* onBeforeMount(() => {
   updateUserProfil();
-});
+}); */
 /* const onRejected = () => {
   errorImageUploaded.value = true;
 

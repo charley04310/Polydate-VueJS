@@ -51,10 +51,10 @@ export default route(function (/* { store, ssrContext } */) {
       }
     } else {
       if (to.path === '/') {
-        return { path: '/home' };
+        return { path: '/polydate' };
       }
       if (to.path.includes('/login')) {
-        return { path: '/home' };
+        return { path: '/polydate' };
       }
       return true;
     }

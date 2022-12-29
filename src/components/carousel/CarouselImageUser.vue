@@ -1,6 +1,6 @@
 <script lang="ts">
-import { useUserStore } from 'src/stores/userStore';
 import { computed, defineComponent } from 'vue';
+import { usePolydateStore } from 'src/stores/polydateStore';
 export default defineComponent({});
 </script>
 
@@ -62,17 +62,17 @@ export default defineComponent({});
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
+const polydateStore = usePolydateStore();
 
-const userStore = useUserStore();
 const user = computed(() => {
-  return userStore.userFeed;
+  return polydateStore.userFeed;
 });
 const userImage = computed(() => {
-  console.log(userStore.userFeedImages);
-  return userStore.userFeedImages;
+  console.log(polydateStore.userFeedImages);
+  return polydateStore.userFeedImages;
 });
 const userSchool = computed(() => {
-  switch (userStore.userFeed?.userSchoolId) {
+  switch (polydateStore.userFeed?.userSchoolId) {
     case 1:
       return 'Université Paul Valéry III Montpellier';
     case 2:

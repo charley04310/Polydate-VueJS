@@ -8,8 +8,8 @@ import { useAuthStore } from './stores/authStore';
 </template>
 
 <script setup lang="ts">
+const authStore = useAuthStore();
 onBeforeMount(async () => {
-  const authStore = useAuthStore();
   await authStore.tryToConnectWithCookies();
 });
 </script>

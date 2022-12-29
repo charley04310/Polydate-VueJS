@@ -50,7 +50,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable to="/home">
+            <q-item clickable to="/polydate">
               <q-item-section avatar>
                 <q-icon name="feed" color="secondary" />
               </q-item-section>

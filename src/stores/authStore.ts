@@ -52,7 +52,6 @@ export interface IToken {
 
 export const useAuthStore = defineStore('Auth', {
   state: () => ({
-    isNewUser: false,
     cookieUser: undefined as ICookieUser | undefined,
     token: undefined as IToken | undefined,
   }),
@@ -71,29 +70,6 @@ export const useAuthStore = defineStore('Auth', {
         : undefined;
 
       //console.log(this.cookieUser);
-    },
-
-    async saveUserToDataBase(newUser: IAddNewUser) {
-      try {
-        const addUser = await axios.post(
-          'http://localhost:8090/api/user',
-          newUser,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (addUser.status === 200) {
-          this.isNewUser = true;
-        }
-      } catch (error) {
-        console.log(error);
-        /*     for (let i = 0; i < error.response.data.length; i++) {
-          console.log(error.response.data[i].property);
-        } */
-      }
     },
 
     async loginUser(user: ILoginUser) {
@@ -127,7 +103,7 @@ export const useAuthStore = defineStore('Auth', {
             expires: '3h 5m',
           });
 
-          this.router.push({ path: '/home' });
+          this.router.push({ path: '/polydate' });
         }
       } catch (error) {
         console.log(error);
