@@ -7,8 +7,8 @@ export default defineComponent({});
 </script>
 <template>
   <q-card
-    style="border-radius: 20px; width: 300px; margin: 1rem auto"
-    class="flex justify-around bg-blue-1 q-pa-sm"
+    style="border-radius: 5px; width: 300px; margin: 1rem auto"
+    class="flex justify-around bg-white-1 q-pa-sm"
   >
     <q-btn
       @click="matchWithUser(1)"
@@ -37,19 +37,18 @@ export default defineComponent({});
     >
       <q-tooltip>Boire un verre</q-tooltip>
     </q-btn>
-  </q-card>
-  <div class="flex justify-center">
+    <q-separator size="3px" vertical />
     <q-btn
       size="20px"
       @click="getRandomUser"
       text-color="secondary"
       color="white"
-      rounded
-      label="Nouveau profil"
+      round
+      icon="autorenew"
     >
       <q-tooltip>get new user</q-tooltip>
     </q-btn>
-  </div>
+  </q-card>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +71,7 @@ const matchWithUser = async (matchType: number) => {
       icon: 'check_circle',
       position: 'top',
     });
+    getRandomUser();
   } else {
     $q.notify({
       message: "Problème lors de l'envoi du match !",

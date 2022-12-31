@@ -32,6 +32,16 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/matches',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/match/IndexAllMatchPage.vue'),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

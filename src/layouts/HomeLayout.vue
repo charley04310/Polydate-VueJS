@@ -60,7 +60,7 @@
               >
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item clickable to="/matches">
               <q-item-section avatar>
                 <q-icon name="deck" color="secondary" />
               </q-item-section>
@@ -70,7 +70,7 @@
               >
             </q-item>
 
-            <q-item clickable v-ripple>
+            <!--            <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="sports_bar" color="secondary" />
               </q-item-section>
@@ -78,7 +78,7 @@
               <q-item-section class="text-weight-bolder">
                 POLY-PARTIES</q-item-section
               >
-            </q-item>
+            </q-item> -->
 
             <q-item clickable v-ripple>
               <q-item-section avatar>
@@ -118,7 +118,7 @@ const userImage = computed(() => {
   return userStore.userImages;
 });
 onBeforeMount(() => {
-  userStore.getUserInformation();
+  userStore.getUserInformationWithCookie();
 });
 const userStore = useUserStore();
 const userName = computed(() => {

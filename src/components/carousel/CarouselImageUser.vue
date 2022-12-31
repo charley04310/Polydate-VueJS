@@ -1,11 +1,13 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { usePolydateStore } from 'src/stores/polydateStore';
+import { useQuasar } from 'quasar';
+
 export default defineComponent({});
 </script>
 
 <template>
-  <q-card class="my-card" bordered style="border-radius: 30px">
+  <q-card class="my-card" bordered v-if="$q.screen.gt.sm">
     <q-carousel
       swipeable
       infinite
@@ -22,6 +24,20 @@ export default defineComponent({});
           :key="index"
           :name="index"
           :img-src="`http://localhost:8090/images/user/${image.imageLink}`"
+        >
+          <div class="absolute-bottom custom-caption">
+            <div class="text-h5">
+              {{ user?.userFirstname }} {{ user?.userLastname }}
+            </div>
+            <div class="text-subtitle1">{{ userSchool }}</div>
+          </div>
+        </q-carousel-slide>
+      </slot>
+
+      <slot v-else>
+        <q-carousel-slide
+          :name="slide"
+          img-src="https://placeimg.com/500/300/nature"
         >
           <div class="absolute-bottom custom-caption">
             <div class="text-h5">
@@ -63,6 +79,7 @@ export default defineComponent({});
 <script setup lang="ts">
 import { ref } from 'vue';
 const polydateStore = usePolydateStore();
+const $q = useQuasar();
 
 const user = computed(() => {
   return polydateStore.userFeed;

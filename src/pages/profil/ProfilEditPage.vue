@@ -15,7 +15,6 @@ import { computed, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 </script>
 <template>
-  
   <h1 class="text-h4 text-white text-bold">
     BIENVENU {{ userStore.connectedUser?.userFirstname }}
   </h1>
@@ -263,7 +262,7 @@ const imgToDelete = ref('');
   }, 3000);
 }; */
 const updateUserProfil = async () => {
-  userStore.getUserInformation();
+  userStore.getUserInformationWithCookie();
   //  userStore.getUserImage();
 };
 
@@ -312,10 +311,7 @@ const userProfil = computed(() => {
 
 const updateUserInformation = async () => {
   if (!userProfil.value) return;
-  const isUpdated = await userStore.updateUserInformation(userProfil.value);
-  if (isUpdated != undefined) {
-    userStore.getUserInformation();
-  }
+  await userStore.updateUserInformation(userProfil.value);
 };
 
 const selection = ref([userProfil.value?.userGenreId]);

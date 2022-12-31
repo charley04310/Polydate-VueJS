@@ -9,3 +9,9 @@ export enum SCHOOL {
   FAC_SCIENCE = 2,
   FAC_MEDCINE = 3,
 }
+
+export enum MATCH_STATE {
+  EN_ATTENTE = 2,
+  VALIDE = 1,
+  REFUSER = 3,
+}

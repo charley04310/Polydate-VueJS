@@ -1,15 +1,13 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { usePolydateStore } from 'src/stores/polydateStore';
-
 import { ref } from 'vue';
 import QItemCard from 'src/components/card/QItemCard.vue';
-import { useUserStore } from 'src/stores/userStore';
 export default defineComponent({});
 </script>
 
 <template>
-  <q-card class="my-card" bordered style="border-radius: 30px">
+  <q-card class="my-card" bordered>
     <q-carousel
       swipeable
       infinite
@@ -46,7 +44,7 @@ export default defineComponent({});
 
       <slot v-else>
         <q-carousel-slide
-          name="first"
+          :name="slide"
           img-src="https://placeimg.com/500/300/nature"
         >
           <div class="absolute-bottom custom-caption">
@@ -87,9 +85,7 @@ const usePolydate = usePolydateStore();
 const user = computed(() => {
   return usePolydate.userFeed;
 });
-
 const userImage = computed(() => {
-  console.log(usePolydate.userFeedImages);
   return usePolydate.userFeedImages;
 });
 

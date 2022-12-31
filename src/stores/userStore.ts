@@ -8,19 +8,30 @@ import {
 } from './authStore';
 
 const authStore = useAuthStore();
+export interface IMtacheCurrentUser {
+  userId?: number;
+  userFirstname: string;
+  userLastname: string;
+  userImageLink: string;
+}
 
 export const useUserStore = defineStore('User', {
   state: () => ({
     connectedUser: undefined as ICreateOrEditUser | undefined,
     userImages: undefined as IUserImages[] | undefined,
     sexualOrientation: undefined as number | undefined,
+    userMatches: undefined as ICreateOrEditUser[] | undefined,
   }),
   getters: {},
   actions: {
-    async getUserInformation() {
+    async getUserInformationWithCookie(iduser?: number) {
       const authStore = useAuthStore();
       try {
-        const url = `http://localhost:8090/api/user/${authStore.cookieUser?.userId}`;
+        let id = undefined;
+        if (iduser === undefined) {
+          id = authStore.cookieUser?.userId;
+        }
+        const url = `http://localhost:8090/api/user/${id}`;
         const loginUser = await axios.get(url, {
           withCredentials: true,
           headers: {
@@ -88,7 +99,7 @@ export const useUserStore = defineStore('User', {
 
         if (updateUser.status === 200) {
           console.log(updateUser);
-          this.getUserInformation;
+          this.getUserInformationWithCookie;
         } else {
           this.connectedUser = undefined;
         }

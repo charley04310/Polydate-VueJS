@@ -24,6 +24,22 @@ export interface ICreateOrEditUser {
   userIciPourId: number | string;
   userDescription: string;
 }
+export interface IMatchWithUser {
+  userId: number;
+  userFirstname: string;
+  userLastname: string;
+  userImage?: IUserImages[];
+}
+export interface IUserMatch {
+  userId?: number;
+  userFirstname: string;
+  userLastname: string;
+  userCity: string;
+  userSchoolId?: number;
+  userGenreId: number;
+  userIciPourId: number | string;
+  userDescription: string;
+}
 
 export interface IUserImages {
   imageId: number;

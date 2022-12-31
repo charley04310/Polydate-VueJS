@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useUserStore } from 'src/stores/userStore';
 import { computed } from 'vue';
 import { usePolydateStore } from 'src/stores/polydateStore';
 
