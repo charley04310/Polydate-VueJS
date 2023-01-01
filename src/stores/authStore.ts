@@ -3,8 +3,8 @@ import { defineStore } from 'pinia';
 import { Cookies } from 'quasar';
 
 export enum USER_ROLE {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
+  USER = 1,
+  ADMIN = 2,
 }
 
 export interface IConnectedUser extends ICreateOrEditUser {
@@ -17,7 +17,8 @@ export interface ICreateOrEditUser {
   userFirstname: string;
   userLastname: string;
   userCity: string;
-  userSchoolId?: number;
+  userRoleId?: USER_ROLE;
+  userSchoolId: number;
   userGenreId: number;
   userEmail: string;
   userPassword?: string;

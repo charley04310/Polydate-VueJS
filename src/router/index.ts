@@ -56,6 +56,7 @@ export default route(function (/* { store, ssrContext } */) {
       if (to.path.includes('/login')) {
         return { path: '/polydate' };
       }
+
       return true;
     }
   });

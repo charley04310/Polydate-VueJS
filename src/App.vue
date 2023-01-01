@@ -9,6 +9,7 @@ import { useAuthStore } from './stores/authStore';
 
 <script setup lang="ts">
 const authStore = useAuthStore();
+
 onBeforeMount(async () => {
   await authStore.tryToConnectWithCookies();
 });

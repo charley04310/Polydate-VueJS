@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pl-md q-pr-md">
     <q-layout view="lHh Lpr lFf">
       <q-header class="bg-secondary">
         <q-toolbar>
@@ -80,7 +80,7 @@
               >
             </q-item> -->
 
-            <q-item clickable v-ripple>
+            <q-item clickable v-if="userRoleId === 1" to="/users/control">
               <q-item-section avatar>
                 <q-icon name="supervisor_account" color="secondary" />
               </q-item-section>
@@ -114,17 +114,20 @@
 import DialogConfirmLogOut from 'src/components/navigation/DialogConfirmLogOut.vue';
 import { useUserStore } from 'src/stores/userStore';
 import { computed, onBeforeMount, ref } from 'vue';
+const userStore = useUserStore();
+
+onBeforeMount(async () => {
+  await userStore.getUserInformationWithCookie();
+});
 const userImage = computed(() => {
   return userStore.userImages;
 });
-onBeforeMount(() => {
-  userStore.getUserInformationWithCookie();
-});
-const userStore = useUserStore();
 const userName = computed(() => {
   return userStore.connectedUser?.userFirstname;
 });
-
+const userRoleId = computed(() => {
+  return userStore.connectedUser?.userRoleId;
+});
 const confirm = ref(false);
 /* const authStore = useAuthStore(); */
 const drawer = ref(false);

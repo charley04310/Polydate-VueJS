@@ -38,7 +38,14 @@ import { useAuthStore } from 'src/stores/authStore';
 
         <template v-slot:action>
           <slot v-if="match.matchStatId === MATCH_STATE.VALIDE">
-            <q-btn flat icon="message" label="Discuter" />
+            <q-btn
+              flat
+              @click="
+                $router.push({ path: `matches/${match.matchId}/messages` })
+              "
+              icon="message"
+              label="Discuter"
+            />
           </slot>
           <slot v-else>
             <q-btn
@@ -104,6 +111,6 @@ const validateMatchOrRefused = async (
   await polydateStore.valideOrRefuseMatche(matchSrcId, type);
   setTimeout(() => {
     polydateStore.getAllMatches();
-  }, 1000);
+  }, 200);
 };
 </script>

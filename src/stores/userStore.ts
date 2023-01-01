@@ -2,12 +2,14 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 import {
   IAddNewUser,
+  ICookieUser,
   ICreateOrEditUser,
   IUserImages,
   useAuthStore,
 } from './authStore';
 
 const authStore = useAuthStore();
+
 export interface IMtacheCurrentUser {
   userId?: number;
   userFirstname: string;
@@ -20,18 +22,12 @@ export const useUserStore = defineStore('User', {
     connectedUser: undefined as ICreateOrEditUser | undefined,
     userImages: undefined as IUserImages[] | undefined,
     sexualOrientation: undefined as number | undefined,
-    userMatches: undefined as ICreateOrEditUser[] | undefined,
   }),
   getters: {},
   actions: {
-    async getUserInformationWithCookie(iduser?: number) {
-      const authStore = useAuthStore();
+    async getUserInformationWithCookie() {
       try {
-        let id = undefined;
-        if (iduser === undefined) {
-          id = authStore.cookieUser?.userId;
-        }
-        const url = `http://localhost:8090/api/user/${id}`;
+        const url = `http://localhost:8090/api/user/${authStore.cookieUser?.userId}`;
         const loginUser = await axios.get(url, {
           withCredentials: true,
           headers: {
@@ -40,22 +36,19 @@ export const useUserStore = defineStore('User', {
           },
         });
 
-        if (loginUser.status === 200) {
-          // console.log(loginUser.data);
-          this.connectedUser = loginUser.data;
-
-          // considerant que la majorité est heterosexuel
-          if (loginUser.data.userGenreId === 1) {
-            this.sexualOrientation = 2;
-          } else {
-            this.sexualOrientation = 1;
-          }
-
-          if (loginUser.data.__images__.length > 0) {
-            this.userImages = loginUser.data.__images__;
-          }
+        // console.log(loginUser.data);
+        this.connectedUser = loginUser.data;
+        console.log('coucou');
+        console.log(this.connectedUser);
+        // considerant que la majorité est heterosexuel
+        if (loginUser.data.userGenreId === 1) {
+          this.sexualOrientation = 2;
         } else {
-          this.connectedUser = undefined;
+          this.sexualOrientation = 1;
+        }
+
+        if (loginUser.data.__images__.length > 0) {
+          this.userImages = loginUser.data.__images__;
         }
       } catch (error) {
         this.connectedUser = undefined;

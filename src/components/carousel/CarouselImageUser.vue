@@ -2,6 +2,7 @@
 import { computed, defineComponent } from 'vue';
 import { usePolydateStore } from 'src/stores/polydateStore';
 import { useQuasar } from 'quasar';
+import { school } from 'src/utils/school/composable';
 
 export default defineComponent({});
 </script>
@@ -29,7 +30,7 @@ export default defineComponent({});
             <div class="text-h5">
               {{ user?.userFirstname }} {{ user?.userLastname }}
             </div>
-            <div class="text-subtitle1">{{ userSchool }}</div>
+            <div class="text-subtitle1">{{ school(user?.userSchoolId) }}</div>
           </div>
         </q-carousel-slide>
       </slot>
@@ -43,7 +44,7 @@ export default defineComponent({});
             <div class="text-h5">
               {{ user?.userFirstname }} {{ user?.userLastname }}
             </div>
-            <div class="text-subtitle1">{{ userSchool }}</div>
+            <div class="text-subtitle1">{{ school(user?.userSchoolId) }}</div>
           </div>
         </q-carousel-slide>
       </slot>
@@ -87,20 +88,6 @@ const user = computed(() => {
 const userImage = computed(() => {
   console.log(polydateStore.userFeedImages);
   return polydateStore.userFeedImages;
-});
-const userSchool = computed(() => {
-  switch (polydateStore.userFeed?.userSchoolId) {
-    case 1:
-      return 'Université Paul Valéry III Montpellier';
-    case 2:
-      return 'Universite des sciences Montpellier';
-
-    case 3:
-      return 'Université de Medcine Montpellier';
-
-    default:
-      return 'Ecole maternelle';
-  }
 });
 
 const slide = ref(0);

@@ -40,6 +40,20 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('src/pages/match/IndexAllMatchPage.vue'),
       },
+      {
+        path: ':id/messages',
+        component: () => import('src/pages/match/IndexMessagesPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/users/control',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/pages/admin/AllUserIndexPage.vue'),
+      },
     ],
   },
   // Always leave this as last one,

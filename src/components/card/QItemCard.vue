@@ -31,7 +31,7 @@ export default defineComponent({});
 
   <q-item>
     <q-item-section avatar>
-      <q-icon color="secondary" name="male" />
+      <q-icon color="secondary" :name="userGenre" />
     </q-item-section>
 
     <q-item-section>
@@ -61,6 +61,19 @@ const userIciPour = computed(() => {
 
     default:
       return 'Ecole maternelle';
+  }
+});
+
+const userGenre = computed(() => {
+  switch (polydateStore.userFeed?.userGenreId) {
+    case 1:
+      return 'female';
+    case 2:
+      return 'male';
+    case 3:
+      return 'ransgender';
+    default:
+      return 'Male';
   }
 });
 </script>

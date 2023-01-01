@@ -105,5 +105,21 @@ export const usePolydateStore = defineStore('Polydate', {
         console.log(error);
       }
     },
+    async getAllUserQtable() {
+      try {
+        const url = 'http://localhost:8090/api/user';
+        const allUsers = await axios.get(url, {
+          withCredentials: true,
+          headers: {
+            'Content-type': 'application/json',
+            Cookie: authStore.token,
+          },
+        });
+
+        return allUsers.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 });

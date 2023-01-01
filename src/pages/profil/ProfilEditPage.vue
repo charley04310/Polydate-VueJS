@@ -11,7 +11,7 @@ import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import DialogConfirmEditUser from 'src/components/dialog/DialogConfirmEditUser.vue';
 import DialogDeleteImage from 'src/components/dialog/DialogConfirmDeleteImage.vue';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 </script>
 <template>
@@ -128,7 +128,7 @@ import { useUserStore } from 'src/stores/userStore';
         v-model="userProfil.userDescription"
         class="bg-white"
       />
-      <q-item>
+      <!--       <q-item>
         <q-item-section avatar>
           <q-icon name="lock" color="secondary" />
         </q-item-section>
@@ -147,7 +147,7 @@ import { useUserStore } from 'src/stores/userStore';
         v-model="userProfil.userPassword"
         :disable="true"
         class="bg-white"
-      />
+      /> -->
     </q-card>
 
     <q-card flat square class="col-12 q-pa-lg q-gutter-y-md">
@@ -251,16 +251,7 @@ const image = ref(null);
 const imageUrl = ref('');
 
 const imgToDelete = ref('');
-/* onBeforeMount(() => {
-  updateUserProfil();
-}); */
-/* const onRejected = () => {
-  errorImageUploaded.value = true;
 
-  setTimeout(() => {
-    errorImageUploaded.value = false;
-  }, 3000);
-}; */
 const updateUserProfil = async () => {
   userStore.getUserInformationWithCookie();
   //  userStore.getUserImage();
