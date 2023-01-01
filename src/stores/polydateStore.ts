@@ -49,7 +49,7 @@ export const usePolydateStore = defineStore('Polydate', {
 
     async likeUser(type: number) {
       try {
-        const url = 'http://localhost:8090/match/start';
+        const url = 'http://localhost:8090/api/match/start';
         const match = await axios.post(
           url,
           { matchDstId: this.userFeed?.userId, matchTypeId: type },
@@ -70,7 +70,7 @@ export const usePolydateStore = defineStore('Polydate', {
     async getAllMatches() {
       const userId = authStore.cookieUser?.userId;
       try {
-        const url = `http://localhost:8090/match/obtenir/${userId}`;
+        const url = `http://localhost:8090/api/match/obtenir/${userId}`;
         const matches = await axios.get(url, {
           withCredentials: true,
           headers: {
@@ -88,7 +88,7 @@ export const usePolydateStore = defineStore('Polydate', {
     },
     async valideOrRefuseMatche(matchSrcId: number, valideOrRefused: number) {
       try {
-        const url = 'http://localhost:8090/match/validation';
+        const url = 'http://localhost:8090/api/match/validation';
         const valideOrRefuse = await axios.put(
           url,
           { matchSrcId: matchSrcId, matchStatId: valideOrRefused },

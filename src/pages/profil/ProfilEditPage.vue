@@ -220,13 +220,13 @@ import { useUserStore } from 'src/stores/userStore';
             v-for="image in userImage"
             @openDialogdeleteUserImage="
               openDialogDeleteImage(
-                `http://localhost:8090/images/user/${image.imageLink}`
+                `http://localhost:8090/api/images/user/${image.imageLink}`
               )
             "
             @AddAsProfilImage="addOrUpdateProfilImage()"
             class="col-2"
             :key="image.imageId"
-            :src="`http://localhost:8090/images/user/${image.imageLink}`"
+            :src="`http://localhost:8090/api/images/user/${image.imageLink}`"
           />
 
           <DialogDeleteImage

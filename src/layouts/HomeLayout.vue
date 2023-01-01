@@ -38,7 +38,7 @@
                 <q-avatar>
                   <img
                     v-if="userImage !== undefined"
-                    :src="`http://localhost:8090/images/user/${userImage[0].imageLink}`"
+                    :src="`http://localhost:8090/api/images/user/${userImage[0].imageLink}`"
                   />
 
                   <img v-else src="https://cdn.quasar.dev/img/avatar.png" />
@@ -80,7 +80,7 @@
               >
             </q-item> -->
 
-            <q-item clickable v-if="userRoleId === 1" to="/users/control">
+            <q-item clickable v-if="userRoleId === 2" to="/users/control">
               <q-item-section avatar>
                 <q-icon name="supervisor_account" color="secondary" />
               </q-item-section>

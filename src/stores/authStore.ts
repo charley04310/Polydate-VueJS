@@ -51,6 +51,7 @@ export interface IUserImages {
 
 export interface ICookieUser {
   userId: number;
+  userRoleId: USER_ROLE;
   userFirstname: string;
   userEmail: string;
 }
@@ -92,7 +93,7 @@ export const useAuthStore = defineStore('Auth', {
     async loginUser(user: ILoginUser) {
       try {
         const loginUser = await axios.post(
-          'http://localhost:8090/auth/login',
+          'http://localhost:8090/api/auth/login',
           user,
           {
             headers: {
@@ -103,6 +104,7 @@ export const useAuthStore = defineStore('Auth', {
 
         this.cookieUser = {
           userId: loginUser.data.user.userId,
+          userRoleId: loginUser.data.user.userRoleId,
           userFirstname: loginUser.data.user.userFirstname,
           userEmail: loginUser.data.user.userEmail,
         };

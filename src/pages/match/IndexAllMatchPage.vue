@@ -16,7 +16,7 @@ import { useAuthStore } from 'src/stores/authStore';
         <q-avatar rounded>
           <img
             v-if="match.matchDstId.userImage != undefined"
-            :src="`http://localhost:8090/images/user/${match.matchDstId.userImage[0].imageLink}`"
+            :src="`http://localhost:8090/api/images/user/${match.matchDstId.userImage[0].imageLink}`"
           />
         </q-avatar>
 

@@ -105,7 +105,7 @@ export const useUserStore = defineStore('User', {
 
     async addUserImage(image: File) {
       try {
-        const url = `http://localhost:8090/images/upload/${authStore.cookieUser?.userId}`;
+        const url = `http://localhost:8090/api/images/upload/${authStore.cookieUser?.userId}`;
         const formData = new FormData();
         formData.append('image', image);
         const updateUser = await axios.post(url, formData, {

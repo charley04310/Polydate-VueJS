@@ -50,9 +50,15 @@ export default route(function (/* { store, ssrContext } */) {
         return { path: '/login' };
       }
     } else {
+      if (authStore.cookieUser?.userRoleId != 2) {
+        if (to.path.includes('/users/control')) {
+          return { path: '/polydate' };
+        }
+      }
       if (to.path === '/') {
         return { path: '/polydate' };
       }
+
       if (to.path.includes('/login')) {
         return { path: '/polydate' };
       }
