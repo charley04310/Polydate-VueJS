@@ -2,7 +2,6 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 import {
   IAddNewUser,
-  ICookieUser,
   ICreateOrEditUser,
   IUserImages,
   useAuthStore,
@@ -32,14 +31,12 @@ export const useUserStore = defineStore('User', {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
 
-        // console.log(loginUser.data);
         this.connectedUser = loginUser.data;
-        console.log('coucou');
-        console.log(this.connectedUser);
+
+        //  console.log(this.connectedUser);
         // considerant que la majorité est heterosexuel
         if (loginUser.data.userGenreId === 1) {
           this.sexualOrientation = 2;
@@ -82,20 +79,14 @@ export const useUserStore = defineStore('User', {
     async updateUserInformation(user: ICreateOrEditUser) {
       try {
         const url = 'http://localhost:8090/api/user';
-        const updateUser = await axios.put(url, user, {
+        await axios.put(url, user, {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
 
-        if (updateUser.status === 200) {
-          console.log(updateUser);
-          this.getUserInformationWithCookie;
-        } else {
-          this.connectedUser = undefined;
-        }
+        this.getUserInformationWithCookie;
       } catch (error) {
         this.connectedUser = undefined;
 
@@ -108,15 +99,14 @@ export const useUserStore = defineStore('User', {
         const url = `http://localhost:8090/api/images/upload/${authStore.cookieUser?.userId}`;
         const formData = new FormData();
         formData.append('image', image);
-        const updateUser = await axios.post(url, formData, {
+        await axios.post(url, formData, {
           withCredentials: true,
           headers: {
             'Content-type': 'multipart/form-data',
-            Cookie: authStore.token,
           },
         });
 
-        console.log(updateUser);
+        // console.log(updateUser);
       } catch (error) {
         console.log(error);
       }
@@ -125,15 +115,14 @@ export const useUserStore = defineStore('User', {
     async deleteUserImage(imageLink: string) {
       try {
         const url = imageLink;
-        const imageUser = await axios.delete(url, {
+        await axios.delete(url, {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
 
-        console.log(imageUser);
+        //  console.log(imageUser);
       } catch (error) {
         console.log(error);
       }
@@ -142,18 +131,17 @@ export const useUserStore = defineStore('User', {
     async addOrUpdateProfileImage() {
       try {
         const url = 'http://localhost:8090/api/user/image';
-        const updateImageUser = await axios.put(
+        await axios.put(
           url,
           { userImageLink: 'imageLink' },
           {
             withCredentials: true,
             headers: {
               'Content-type': 'application/json',
-              Cookie: authStore.token,
             },
           }
         );
-        console.log(updateImageUser);
+        //  console.log(updateImageUser);
       } catch (error) {
         console.log(error);
       }

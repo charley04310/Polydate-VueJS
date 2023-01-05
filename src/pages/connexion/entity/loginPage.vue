@@ -1,3 +1,11 @@
+<script lang="ts">
+import { ILoginUser, useAuthStore } from 'src/stores/authStore';
+import QInputMail from 'src/components/input/QInputMail.vue';
+import QInputPassword from 'src/components/input/QInputPassword.vue';
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+</script>
+
 <template>
   <q-card flat class="text-black q-pa-md">
     <q-item>
@@ -7,7 +15,7 @@
     </q-item>
 
     <div class="q-gutter-y-md q-mt-sm">
-      <QInputMail v-model="userLogin.userEmail" />
+      <QInputMail type="email" v-model="userLogin.userEmail" />
       <QInputPassword filled v-model="userLogin.userPassword" />
     </div>
 
@@ -31,12 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import { ILoginUser, useAuthStore } from 'src/stores/authStore';
-import QInputMail from 'src/components/input/QInputMail.vue';
-import QInputPassword from 'src/components/input/QInputPassword.vue';
-import { ref } from 'vue';
+const $q = useQuasar();
+
 const authStore = useAuthStore();
-const errorLogin = ref(false);
+
 const emit = defineEmits<{
   (e: 'registerPage'): void;
 }>();
@@ -45,12 +51,17 @@ const userLogin = ref<ILoginUser>({
   userPassword: '',
 });
 
-const login = () => {
+const login = async () => {
   try {
-    authStore.loginUser(userLogin.value);
+    await authStore.loginUser(userLogin.value);
   } catch (error) {
-    errorLogin.value = true;
-    console.log(error);
+    $q.notify({
+      message: 'Problème identifiants incorrect!',
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'check_circle',
+      position: 'top',
+    });
   }
 };
 </script>

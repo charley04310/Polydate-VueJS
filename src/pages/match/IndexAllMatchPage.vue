@@ -1,6 +1,7 @@
 <script lang="ts">
 import { getRelativeTime } from 'src/utils/date/composable';
 import { useAuthStore } from 'src/stores/authStore';
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
@@ -13,12 +14,12 @@ import { useAuthStore } from 'src/stores/authStore';
         rounded
         :class="`${getColorBanner(match.matchStatId)} text-white`"
       >
-        <q-avatar rounded>
+        <!--         <q-avatar rounded>
           <img
             v-if="match.matchDstId.userImage != undefined"
             :src="`http://localhost:8090/api/images/user/${match.matchDstId.userImage[0].imageLink}`"
           />
-        </q-avatar>
+        </q-avatar> -->
 
         <span
           v-if="match.matchSrcId.userId === userId"
@@ -40,9 +41,7 @@ import { useAuthStore } from 'src/stores/authStore';
           <slot v-if="match.matchStatId === MATCH_STATE.VALIDE">
             <q-btn
               flat
-              @click="
-                $router.push({ path: `matches/${match.matchId}/messages` })
-              "
+              @click="userTalkToSomeone(parseInt(match.matchId), match)"
               icon="message"
               label="Discuter"
             />
@@ -82,10 +81,11 @@ import { useAuthStore } from 'src/stores/authStore';
 
 <script lang="ts" setup>
 import { MATCH_STATE } from 'src/enums/emunsUser';
-import { usePolydateStore } from 'src/stores/polydateStore';
-import { computed, onBeforeMount } from 'vue';
+import { IMatcheUser, usePolydateStore } from 'src/stores/polydateStore';
+import { computed, onBeforeMount, ref } from 'vue';
 const polydateStore = usePolydateStore();
 const authStore = useAuthStore();
+const router = useRouter();
 
 const userId = computed(() => {
   return authStore.cookieUser?.userId;
@@ -93,9 +93,29 @@ const userId = computed(() => {
 
 onBeforeMount(async () => {
   await polydateStore.getAllMatches();
-  console.log('onBeforeMount');
+  //'onBeforeMount');
 });
+const userTalkToSomeone = (matchId: number, match: IMatcheUser) => {
+  if (authStore.cookieUser === undefined) {
+    return false;
+  }
 
+  const receiver = ref(0);
+
+  if (match.matchSrcId.userId === authStore.cookieUser.userId) {
+    receiver.value = match.matchDstId.userId;
+  } else {
+    receiver.value = match.matchSrcId.userId;
+  }
+
+  polydateStore.userTalkToSomeOne = {
+    matchId: matchId,
+    receiver: receiver.value,
+    sender: authStore.cookieUser.userId,
+  };
+
+  router.push({ path: `matches/${matchId}/messages` });
+};
 const getColorBanner = (state: number) => {
   if (state === MATCH_STATE.VALIDE) return 'bg-green';
   return 'bg-orange';

@@ -2,6 +2,7 @@
 import { school } from 'src/utils/school/composable';
 import { state } from 'src/utils/state/composable';
 import { USER_STATE } from 'src/enums/emunsUser';
+import { useAdminStore } from 'src/stores/adminStore';
 </script>
 <template>
   <div class="q-pa-md">
@@ -14,11 +15,15 @@ import { USER_STATE } from 'src/enums/emunsUser';
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <div class="q-gutter-x-xs">
-            <q-btn round color="primary" size="0.75em" glossy icon="key_off">
+            <q-btn
+              round
+              color="primary"
+              @click="banOrUnBanUser(props.row.userId, { userStatId: 5 })"
+              size="0.75em"
+              glossy
+              icon="key_off"
+            >
               <q-tooltip>Bannir </q-tooltip>
-            </q-btn>
-            <q-btn round color="green" size="0.75em" glossy icon="favorite">
-              <q-tooltip>Profiter du super privilège</q-tooltip>
             </q-btn>
           </div>
           <div class="my-table-details">
@@ -48,15 +53,18 @@ import { USER_STATE } from 'src/enums/emunsUser';
 </template>
 
 <script lang="ts" setup>
-import { usePolydateStore } from 'src/stores/polydateStore';
 import { onBeforeMount, ref } from 'vue';
-const polydateStore = usePolydateStore();
+const adminStore = useAdminStore();
 
 const allUser = ref();
 onBeforeMount(async () => {
-  allUser.value = await polydateStore.getAllUserQtable();
+  allUser.value = await adminStore.getAllUserQtable();
 });
 
+const banOrUnBanUser = async (id: number, data: { userStatId: number }) => {
+  await adminStore.banOrUnBanUser(id, data);
+  allUser.value = await adminStore.getAllUserQtable();
+};
 const getcolorCell = (id: USER_STATE) => {
   switch (id) {
     case USER_STATE.VALIDE:
@@ -115,7 +123,7 @@ const columns = [
   },
   {
     name: 'actions',
-    label: 'Actions',
+    label: 'Action',
     align: 'center',
     field: 'actions',
     sortable: true,

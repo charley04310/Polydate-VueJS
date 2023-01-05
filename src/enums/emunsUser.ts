@@ -19,5 +19,5 @@ export enum MATCH_STATE {
 export enum USER_STATE {
   EN_ATTENTE = 2,
   VALIDE = 1,
-  BANNIS = 3,
+  BANNIS = 5,
 }

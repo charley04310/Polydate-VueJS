@@ -40,6 +40,8 @@ export default route(function (/* { store, ssrContext } */) {
 
   router = Router;
 
+
+
   router.beforeEach((to) => {
     const authStore = useAuthStore();
 

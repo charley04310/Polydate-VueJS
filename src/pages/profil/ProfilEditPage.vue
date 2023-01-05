@@ -3,15 +3,13 @@ import QcardImageUser from 'src/components/image/QcardImageUser.vue';
 import QInputFIrstName from 'src/components/input/QInputFIrstName.vue';
 import QInputLastName from 'src/components/input/QInputLastName.vue';
 import QInputCity from 'src/components/input/QInputCity.vue';
-import QInputMail from 'src/components/input/QInputMail.vue';
-import QInputPassword from 'src/components/input/QInputPassword.vue';
 import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import DialogConfirmEditUser from 'src/components/dialog/DialogConfirmEditUser.vue';
 import DialogDeleteImage from 'src/components/dialog/DialogConfirmDeleteImage.vue';
 
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 </script>
 <template>

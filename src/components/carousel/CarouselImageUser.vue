@@ -86,7 +86,7 @@ const user = computed(() => {
   return polydateStore.userFeed;
 });
 const userImage = computed(() => {
-  console.log(polydateStore.userFeedImages);
+  // console.log(polydateStore.userFeedImages);
   return polydateStore.userFeedImages;
 });
 

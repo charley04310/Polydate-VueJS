@@ -2,9 +2,8 @@
 import CarouselImageUser from 'src/components/carousel/CarouselImageUser.vue';
 import CarouselMobileUser from 'src/components/carousel/CarouselMobileUser.vue';
 import MatchUserNavigation from 'src/components/match/MatchUserNavigation.vue';
-import { usePolydateStore } from 'src/stores/polydateStore';
 import { useUserStore } from 'src/stores/userStore';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import QCheckBoxSelectUserGenreVue from 'src/components/filter/QCheckBoxSelectUserGenre.vue';
 </script>
 

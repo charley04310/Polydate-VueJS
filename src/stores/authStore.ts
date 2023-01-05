@@ -31,6 +31,15 @@ export interface IMatchWithUser {
   userLastname: string;
   userImage?: IUserImages[];
 }
+
+export interface IMessageUser {
+  matchId: number;
+  sender: number;
+  receiver: number;
+  message?: string;
+  messageDate?: string;
+}
+
 export interface IUserMatch {
   userId?: number;
   userFirstname: string;
@@ -65,7 +74,6 @@ export type IAddNewUser = ICreateOrEditUser;
 
 export interface IToken {
   value: string;
-  cookieExpiration: string;
 }
 
 export const useAuthStore = defineStore('Auth', {
@@ -81,57 +89,48 @@ export const useAuthStore = defineStore('Auth', {
   actions: {
     async tryToConnectWithCookies() {
       this.cookieUser = Cookies.get('user_polydate')
-        ? (Cookies.get('user_polydate') as ICookieUser)
-        : undefined;
-      this.token = Cookies.get('token_polydate')
-        ? (Cookies.get('token_polydate') as IToken)
+        ? Cookies.get('user_polydate')
         : undefined;
 
+      this.token = Cookies.get('tokenPolydate')
+        ? Cookies.get('tokenPolydate')
+        : undefined;
+      console.log(this.token);
       //console.log(this.cookieUser);
     },
 
     async loginUser(user: ILoginUser) {
-      try {
-        const loginUser = await axios.post(
-          'http://localhost:8090/api/auth/login',
-          user,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        this.cookieUser = {
-          userId: loginUser.data.user.userId,
-          userRoleId: loginUser.data.user.userRoleId,
-          userFirstname: loginUser.data.user.userFirstname,
-          userEmail: loginUser.data.user.userEmail,
-        };
-
-        if (loginUser.status === 200) {
-          Cookies.set('token', loginUser.data.token, {
-            secure: false,
-            sameSite: 'Lax',
-            expires: '3h 5m',
-          });
-
-          Cookies.set('user_polydate', JSON.stringify(this.cookieUser), {
-            secure: false,
-            sameSite: 'Lax',
-            expires: '3h 5m',
-          });
-
-          this.router.push({ path: '/polydate' });
+      const loginUser = await axios.post(
+        'http://localhost:8090/api/auth/login',
+        user,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      } catch (error) {
-        console.log(error);
-      }
+      );
+
+      await loginUser.data.user.userStatId;
+
+      this.cookieUser = {
+        userId: loginUser.data.user.userId,
+        userRoleId: loginUser.data.user.userRoleId,
+        userFirstname: loginUser.data.user.userFirstname,
+        userEmail: loginUser.data.user.userEmail,
+      };
+
+      Cookies.set('user_polydate', JSON.stringify(this.cookieUser), {
+        secure: true,
+        sameSite: 'Lax',
+        expires: '4h 5m',
+      });
+
+      this.router.push({ path: '/polydate' });
     },
 
     async logoutUser() {
       try {
-        Cookies.remove('token_polydate');
         Cookies.remove('user_polydate');
         this.cookieUser = undefined;
         this.token = undefined;

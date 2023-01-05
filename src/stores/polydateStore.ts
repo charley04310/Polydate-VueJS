@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import { Message } from 'src/pages/match/IndexMessagesPage.vue';
 import {
   ICreateOrEditUser,
   IMatchWithUser,
+  IMessageUser,
   IUserImages,
   useAuthStore,
 } from './authStore';
@@ -21,8 +23,13 @@ export const usePolydateStore = defineStore('Polydate', {
     userFeed: undefined as ICreateOrEditUser | undefined,
     userFeedImages: undefined as IUserImages[] | undefined,
     userMatches: undefined as IMatcheUser[] | undefined,
+    userTalkToSomeOne: undefined as IMessageUser | undefined,
   }),
-  getters: {},
+  getters: {
+    isTalkingToSomeOne(): boolean {
+      return this.userTalkToSomeOne !== undefined;
+    },
+  },
   actions: {
     async getRandomUserBygenre(genre: number) {
       try {
@@ -31,12 +38,11 @@ export const usePolydateStore = defineStore('Polydate', {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
 
         this.userFeed = randomUser.data;
-        console.log(randomUser.data.__images__);
+        // console.log(randomUser.data.__images__);
         if (randomUser.data.__images__.length > 0) {
           this.userFeedImages = randomUser.data.__images__;
         } else {
@@ -57,7 +63,6 @@ export const usePolydateStore = defineStore('Polydate', {
             withCredentials: true,
             headers: {
               'Content-type': 'application/json',
-              Cookie: authStore.token,
             },
           }
         );
@@ -75,13 +80,12 @@ export const usePolydateStore = defineStore('Polydate', {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
 
         this.userMatches = matches.data;
 
-        console.log(this.userMatches);
+        //console.log(this.userMatches);
       } catch (error) {
         console.log(error);
       }
@@ -89,36 +93,65 @@ export const usePolydateStore = defineStore('Polydate', {
     async valideOrRefuseMatche(matchSrcId: number, valideOrRefused: number) {
       try {
         const url = 'http://localhost:8090/api/match/validation';
-        const valideOrRefuse = await axios.put(
+        await axios.put(
           url,
           { matchSrcId: matchSrcId, matchStatId: valideOrRefused },
           {
             withCredentials: true,
             headers: {
               'Content-type': 'application/json',
-              Cookie: authStore.token,
             },
           }
         );
-        console.log(valideOrRefuse);
+        // console.log(valideOrRefuse);
       } catch (error) {
         console.log(error);
       }
     },
-    async getAllUserQtable() {
+
+    async sendMessageToUser(
+      message: string,
+      matchId: number,
+      receiver: number
+    ) {
       try {
-        const url = 'http://localhost:8090/api/user';
-        const allUsers = await axios.get(url, {
+        const url = 'http://localhost:8090/api/messages/envoyer';
+        const messageUser = await axios.post(
+          url,
+          {
+            userId: authStore.cookieUser?.userId,
+            userDstId: receiver,
+            matchId: matchId,
+            message: message,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              'Content-type': 'application/json',
+            },
+          }
+        );
+        console.log(message);
+        return messageUser;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getAllMessagesByMatchId(
+      matchId: number
+    ): Promise<Message[] | undefined> {
+      try {
+        const url = `http://localhost:8090/api/messages/otenir/${matchId}`;
+        const messages = await axios.get(url, {
           withCredentials: true,
           headers: {
             'Content-type': 'application/json',
-            Cookie: authStore.token,
           },
         });
-
-        return allUsers.data;
+        return messages.data;
       } catch (error) {
-        console.log(error);
+        return undefined;
       }
     },
   },
