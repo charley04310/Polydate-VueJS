@@ -31,7 +31,6 @@ const genreFromStore = computed(() => {
 const selection = ref([genreFromStore.value]);
 
 onBeforeMount(async () => {
-  await userStore.getUserInformationWithCookie();
   if (userStore.sexualOrientation) {
     selection.value = [userStore.sexualOrientation];
   }

@@ -1,10 +1,10 @@
 <script lang="ts">
 import io from 'socket.io-client';
 import { getRelativeTime } from 'src/utils/date/composable';
-
 import { useRouter } from 'vue-router';
 import { IMessageUser, useAuthStore } from 'src/stores/authStore';
 import { usePolydateStore } from 'src/stores/polydateStore';
+
 export interface Message {
   messageContent: string;
   messageDate: number;
@@ -63,7 +63,7 @@ const isSent = (sender: number) => {
 
 onBeforeMount(async () => {
   if (polydateStore.userTalkToSomeOne === undefined) {
-    router.push({ path: 'matches' });
+    router.push({ path: 'messages' });
   } else {
     socket.emit('join', polydateStore.userTalkToSomeOne);
   }

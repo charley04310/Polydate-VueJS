@@ -306,9 +306,8 @@ import { useUserStore } from 'src/stores/userStore';
 
 <script setup lang="ts">
 //import { Todo } from 'src/components/models';
-import { watch, ref, computed } from 'vue';
+import { watch, ref, computed, reactive } from 'vue';
 import { ICreateOrEditUser } from 'src/stores/authStore';
-
 const loading = ref(false);
 const userStore = useUserStore();
 const isCreated = ref<boolean | undefined>(undefined);
@@ -327,7 +326,7 @@ const createNewUser = async (newUser: ICreateOrEditUser) => {
   }, 2000);
 };
 
-const newUser = ref<ICreateOrEditUser>({
+const newUser = reactive<ICreateOrEditUser>({
   userFirstname: '',
   userLastname: '',
   userCity: 'Montpellier',
@@ -353,10 +352,10 @@ const emit = defineEmits<{
   (e: 'loginPage'): void;
 }>();
 watch(selection, (newSelection) => {
-  newUser.value.userGenreId = parseInt(selection.value[0]);
+  newUser.userGenreId = parseInt(selection.value[0]);
 
   if (newSelection.length > 1) {
-    newUser.value.userGenreId = parseInt(newSelection[1]);
+    newUser.userGenreId = parseInt(newSelection[1]);
     selection.value = [newSelection[1]];
   }
 });
@@ -371,14 +370,14 @@ const isPasswordValid = (val: string) => {
   return regex.test(val);
 };
 const isSamePassword = (val: string) => {
-  return val === newUser.value.userPassword;
+  return val === newUser.userPassword;
 };
 const setp2Validator = computed(() => {
   if (
     emailIsValide.value &&
     passWordIsValid.value &&
     passwordConfirmation.value.toString().length > 0 &&
-    newUser.value.userPassword === passwordConfirmation.value
+    newUser.userPassword === passwordConfirmation.value
   ) {
     return false;
   } else {
@@ -389,9 +388,9 @@ const step1Validator = computed(() => {
   if (
     selection.value.length > 0 &&
     // prenom et nom de plus de 1 lettre
-    newUser.value.userFirstname.length > 1 &&
-    newUser.value.userLastname.length > 1 &&
-    newUser.value.userCity.length > 0
+    newUser.userFirstname.length > 1 &&
+    newUser.userLastname.length > 1 &&
+    newUser.userCity.length > 0
   ) {
     return false;
   } else {
