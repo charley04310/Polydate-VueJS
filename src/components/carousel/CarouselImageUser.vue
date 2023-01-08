@@ -24,7 +24,7 @@ export default defineComponent({});
           v-for="(image, index) in userImage"
           :key="index"
           :name="index"
-          :img-src="`http://localhost:8090/api/images/user/${image.imageLink}`"
+          :img-src="`https://cluster-2022-5.dopolytech.fr/api/images/user/${image.imageLink}`"
         >
           <div class="absolute-bottom custom-caption">
             <div class="text-h5">

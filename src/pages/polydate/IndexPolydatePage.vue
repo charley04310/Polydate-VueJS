@@ -11,12 +11,8 @@ import QCheckBoxSelectUserGenreVue from 'src/components/filter/QCheckBoxSelectUs
   <QCheckBoxSelectUserGenreVue />
 
   <div class="row justify-between">
-    <div class="col-md-6 col-sm-12 col-xs-12 q-pr-sm">
+    <div class="col-md-12 col-sm-12 col-xs-12 q-pr-sm">
       <CarouselMobileUser />
-    </div>
-
-    <div class="col-md-6 col-sm-12 col-xs-12 q-pl-sm">
-      <CarouselImageUser />
       <MatchUserNavigation />
     </div>
   </div>
@@ -31,6 +27,8 @@ const genreFromStore = computed(() => {
 const selection = ref([genreFromStore.value]);
 
 onBeforeMount(async () => {
+  await userStore.getUserInformationWithCookie();
+
   if (userStore.sexualOrientation) {
     selection.value = [userStore.sexualOrientation];
   }

@@ -11,14 +11,19 @@ import DialogDeleteImage from 'src/components/dialog/DialogConfirmDeleteImage.vu
 
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
+import { useQuasar } from 'quasar';
 </script>
 <template>
   <h1 class="text-h4 text-white text-bold">
-    BIENVENU {{ userStore.connectedUser?.userFirstname }}
+    BIENVENUE {{ userStore.connectedUser?.userFirstname }}
   </h1>
 
   <div v-if="userProfil" class="row justify-between q-mt-lg">
-    <q-card flat square class="col-6 q-pa-lg q-gutter-y-md">
+    <q-card
+      flat
+      square
+      class="col-md-6 col-sm-12 col-xs-12 q-pa-lg q-gutter-y-md"
+    >
       <div class="row justify-between">
         <q-item>
           <q-item-section avatar>
@@ -106,7 +111,11 @@ import { useUserStore } from 'src/stores/userStore';
         </q-card>
       </div>
     </q-card>
-    <q-card flat square class="col-6 q-pa-lg q-gutter-y-md">
+    <q-card
+      flat
+      square
+      class="col-md-6 col-sm-12 col-xs-12 q-pa-lg q-gutter-y-md"
+    >
       <q-item>
         <q-item-section avatar>
           <q-icon name="face" color="secondary" />
@@ -126,26 +135,6 @@ import { useUserStore } from 'src/stores/userStore';
         v-model="userProfil.userDescription"
         class="bg-white"
       />
-      <!--       <q-item>
-        <q-item-section avatar>
-          <q-icon name="lock" color="secondary" />
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-label>Sécurité</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <QInputMail
-        v-model="userProfil.userEmail"
-        :disable="true"
-        class="bg-white"
-      />
-      <QInputPassword
-        v-model="userProfil.userPassword"
-        :disable="true"
-        class="bg-white"
-      /> -->
     </q-card>
 
     <q-card flat square class="col-12 q-pa-lg q-gutter-y-md">
@@ -155,7 +144,11 @@ import { useUserStore } from 'src/stores/userStore';
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>Vos images</q-item-label>
+          <q-item-label>Vos images </q-item-label>
+          <q-item-label v-if="userImage && userImage.length === 5" caption
+            >Maximum 5 images</q-item-label
+          >
+
           <q-item-label v-if="succesImageUploaded" style="color: green"
             >Image ajoutée avec succès !</q-item-label
           >
@@ -165,7 +158,12 @@ import { useUserStore } from 'src/stores/userStore';
         </q-item-section>
       </q-item>
 
-      <q-card class="my-card" flat bordered>
+      <q-card
+        class="my-card"
+        flat
+        bordered
+        v-if="userImage == undefined || (userImage && userImage.length < 5)"
+      >
         <q-card-section horizontal>
           <q-card-section>
             <q-file
@@ -218,13 +216,12 @@ import { useUserStore } from 'src/stores/userStore';
             v-for="image in userImage"
             @openDialogdeleteUserImage="
               openDialogDeleteImage(
-                `http://localhost:8090/api/images/user/${image.imageLink}`
+                `https://cluster-2022-5.dopolytech.fr/api/images/user/${image.imageLink}`
               )
             "
-            @AddAsProfilImage="addOrUpdateProfilImage()"
-            class="col-2"
+            :class="$q.screen.gt.sm ? 'col-2' : 'col-6'"
             :key="image.imageId"
-            :src="`http://localhost:8090/api/images/user/${image.imageLink}`"
+            :src="`https://cluster-2022-5.dopolytech.fr/api/images/user/${image.imageLink}`"
           />
 
           <DialogDeleteImage
@@ -241,29 +238,20 @@ import { useUserStore } from 'src/stores/userStore';
 const confirmDialogIsOpen = ref(false);
 const succesImageUploaded = ref(false);
 const dialogDeleteImageIsOpen = ref(false);
-//const authStore = useAuthStore();
 const editMyProfil = ref(true);
 const userStore = useUserStore();
 const errorImageUploaded = ref(false);
 const image = ref(null);
 const imageUrl = ref('');
-
 const imgToDelete = ref('');
-
+const $q = useQuasar();
 const updateUserProfil = async () => {
-  userStore.getUserInformationWithCookie();
-  //  userStore.getUserImage();
+  await userStore.getUserInformationWithCookie();
 };
 
 const deleteUserImage = async (imageLink: string) => {
   await userStore.deleteUserImage(imageLink);
-
-  updateUserProfil();
-};
-
-const addOrUpdateProfilImage = async () => {
-  await userStore.addOrUpdateProfileImage();
-  updateUserProfil();
+  await updateUserProfil();
 };
 
 const openDialogDeleteImage = (imageLink: string) => {
@@ -274,7 +262,6 @@ const deleteImageBeforeUplaoad = () => {
   image.value = null;
 };
 const uploadImageCard = () => {
-  console.log(image.value);
   if (image.value) {
     imageUrl.value = URL.createObjectURL(image.value);
   }

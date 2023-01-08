@@ -1,6 +1,7 @@
 .DS_Store
 .thumbs.db
 node_modules
+nginx.conf
 
 # Quasar core related directories
 .quasar

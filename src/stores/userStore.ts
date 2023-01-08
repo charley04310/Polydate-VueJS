@@ -26,7 +26,7 @@ export const useUserStore = defineStore('User', {
   actions: {
     async getUserInformationWithCookie() {
       try {
-        const url = `http://localhost:8090/api/user/${authStore.cookieUser?.userId}`;
+        const url = `https://cluster-2022-5.dopolytech.fr/api/user/${authStore.cookieUser?.userId}`;
         const loginUser = await axios.get(url, {
           withCredentials: true,
           headers: {
@@ -35,7 +35,6 @@ export const useUserStore = defineStore('User', {
         });
 
         this.connectedUser = loginUser.data;
-
         //  console.log(this.connectedUser);
         // considerant que la majorité est heterosexuel
         if (loginUser.data.userGenreId === 1) {
@@ -54,31 +53,20 @@ export const useUserStore = defineStore('User', {
     },
 
     async saveUserToDataBase(newUser: IAddNewUser) {
-      try {
-        const addUser = await axios.post(
-          'http://localhost:8090/api/user',
-          newUser,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (addUser.status === 200) {
-          return true;
+      await axios.post(
+        'https://cluster-2022-5.dopolytech.fr/api/user',
+        newUser,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      } catch (error) {
-        console.log(error);
-        /*     for (let i = 0; i < error.response.data.length; i++) {
-          console.log(error.response.data[i].property);
-        } */
-      }
+      );
     },
 
     async updateUserInformation(user: ICreateOrEditUser) {
       try {
-        const url = 'http://localhost:8090/api/user';
+        const url = 'https://cluster-2022-5.dopolytech.fr/api/user';
         await axios.put(url, user, {
           withCredentials: true,
           headers: {
@@ -95,56 +83,25 @@ export const useUserStore = defineStore('User', {
     },
 
     async addUserImage(image: File) {
-      try {
-        const url = `http://localhost:8090/api/images/upload/${authStore.cookieUser?.userId}`;
-        const formData = new FormData();
-        formData.append('image', image);
-        await axios.post(url, formData, {
-          withCredentials: true,
-          headers: {
-            'Content-type': 'multipart/form-data',
-          },
-        });
-
-        // console.log(updateUser);
-      } catch (error) {
-        console.log(error);
-      }
+      const url = `https://cluster-2022-5.dopolytech.fr/api/images/upload/${authStore.cookieUser?.userId}`;
+      const formData = new FormData();
+      formData.append('image', image);
+      await axios.post(url, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      });
     },
 
     async deleteUserImage(imageLink: string) {
-      try {
-        const url = imageLink;
-        await axios.delete(url, {
-          withCredentials: true,
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
-
-        //  console.log(imageUser);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async addOrUpdateProfileImage() {
-      try {
-        const url = 'http://localhost:8090/api/user/image';
-        await axios.put(
-          url,
-          { userImageLink: 'imageLink' },
-          {
-            withCredentials: true,
-            headers: {
-              'Content-type': 'application/json',
-            },
-          }
-        );
-        //  console.log(updateImageUser);
-      } catch (error) {
-        console.log(error);
-      }
+      const url = imageLink;
+      await axios.delete(url, {
+        withCredentials: true,
+        headers: {
+          'Content-type': 'application/json',
+        },
+      });
     },
   },
 });

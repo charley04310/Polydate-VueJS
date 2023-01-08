@@ -8,7 +8,7 @@ export default defineComponent({});
     <q-input
       v-bind="$attrs"
       filled
-      input-style="min-width: 450px"
+      input-style="max-width: 450px; min-width: 350px"
       outlined
       type="textarea"
     />

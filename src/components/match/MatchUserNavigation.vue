@@ -24,18 +24,18 @@ export default defineComponent({});
       size="20px"
       round
       color="blue"
-      icon="school"
+      icon="cruelty_free"
     >
-      <q-tooltip>Rencontre amicale</q-tooltip>
+      <q-tooltip>Rencontre sans lendemain</q-tooltip>
     </q-btn>
     <q-btn
       @click="matchWithUser(3)"
       size="20px"
       round
       color="green"
-      icon="local_bar"
+      icon="school"
     >
-      <q-tooltip>Boire un verre</q-tooltip>
+      <q-tooltip>Rencontre Universitaire</q-tooltip>
     </q-btn>
     <q-separator size="3px" vertical />
     <q-btn
@@ -83,8 +83,8 @@ const matchWithUser = async (matchType: number) => {
   }
 };
 
-const getRandomUser = () => {
+const getRandomUser = async () => {
   if (genreToFetch.value === undefined) return;
-  polydateStore.getRandomUserBygenre(genreToFetch.value);
+  await polydateStore.getRandomUserBygenre(genreToFetch.value);
 };
 </script>

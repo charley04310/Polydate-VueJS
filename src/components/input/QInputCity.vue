@@ -7,7 +7,7 @@ export default defineComponent({});
   <div>
     <q-input
       v-bind="$attrs"
-      input-style="min-width: 450px"
+      input-style="max-width: 450px"
       class="q-mx-none"
       :disable="true"
       outlined

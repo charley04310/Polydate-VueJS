@@ -9,6 +9,6 @@ export const school = (school?: number) => {
       return 'Université de Medcine Montpellier';
 
     default:
-      return 'Ecole maternelle';
+      return 'Utilisateur non renseigné';
   }
 };

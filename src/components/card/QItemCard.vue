@@ -17,17 +17,6 @@ export default defineComponent({});
       <div class="text-grey">{{ userIciPour }}</div>
     </q-item-section>
   </q-item>
-  <!--
-  <q-item>
-    <q-item-section avatar>
-      <q-icon color="secondary" name="ramen_dining" />
-    </q-item-section>
-
-    <q-item-section>
-      <div class="text-h5 q-mb-xs">Soirée...</div>
-      <div class="text-grey">Appartement entre amis !</div>
-    </q-item-section>
-  </q-item> -->
 
   <q-item>
     <q-item-section avatar>
@@ -60,7 +49,7 @@ const userIciPour = computed(() => {
       return 'Un peu de tout ça';
 
     default:
-      return 'Ecole maternelle';
+      return 'Une rencontre Amoureuse';
   }
 });
 
@@ -71,7 +60,7 @@ const userGenre = computed(() => {
     case 2:
       return 'male';
     case 3:
-      return 'ransgender';
+      return 'transgender';
     default:
       return 'Male';
   }

@@ -8,7 +8,7 @@ export default defineComponent({});
     <q-input
       v-bind="$attrs"
       ref="email"
-      input-style="min-width: 450px"
+      input-style="max-width: 450px; min-width: 350px"
       class="q-mx-none"
       type="password"
       label="Mot de passe"

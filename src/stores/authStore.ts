@@ -91,17 +91,11 @@ export const useAuthStore = defineStore('Auth', {
       this.cookieUser = Cookies.get('user_polydate')
         ? Cookies.get('user_polydate')
         : undefined;
-
-      this.token = Cookies.get('tokenPolydate')
-        ? Cookies.get('tokenPolydate')
-        : undefined;
-      console.log(this.token);
-      //console.log(this.cookieUser);
     },
 
     async loginUser(user: ILoginUser) {
       const loginUser = await axios.post(
-        'http://localhost:8090/api/auth/login',
+        'https://cluster-2022-5.dopolytech.fr/api/auth/login',
         user,
         {
           withCredentials: true,
@@ -110,8 +104,6 @@ export const useAuthStore = defineStore('Auth', {
           },
         }
       );
-
-      await loginUser.data.user.userStatId;
 
       this.cookieUser = {
         userId: loginUser.data.user.userId,
@@ -131,6 +123,16 @@ export const useAuthStore = defineStore('Auth', {
 
     async logoutUser() {
       try {
+        await axios.post(
+          'https://cluster-2022-5.dopolytech.fr/api/auth/logout',
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
         Cookies.remove('user_polydate');
         this.cookieUser = undefined;
         this.token = undefined;

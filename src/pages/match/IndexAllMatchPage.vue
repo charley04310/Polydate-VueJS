@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 </script>
 
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <div class="q-pa-md q-gutter-sm window-height">
     <slot v-if="matches !== undefined">
       <q-banner
         v-for="(match, index) in matches"
@@ -14,13 +14,6 @@ import { useRouter } from 'vue-router';
         rounded
         :class="`${getColorBanner(match.matchStatId)} text-white`"
       >
-        <!--         <q-avatar rounded>
-          <img
-            v-if="match.matchDstId.userImage != undefined"
-            :src="`http://localhost:8090/api/images/user/${match.matchDstId.userImage[0].imageLink}`"
-          />
-        </q-avatar> -->
-
         <span
           v-if="match.matchSrcId.userId === userId"
           class="q-pl-md text-uppercase text-subtitle1 text-weight-bold"
@@ -93,8 +86,8 @@ const userId = computed(() => {
 
 onBeforeMount(async () => {
   await polydateStore.getAllMatches();
-  //'onBeforeMount');
 });
+
 const userTalkToSomeone = (matchId: number, match: IMatcheUser) => {
   if (authStore.cookieUser === undefined) {
     return false;
@@ -116,6 +109,7 @@ const userTalkToSomeone = (matchId: number, match: IMatcheUser) => {
 
   router.push({ path: `matches/${matchId}/messages` });
 };
+
 const getColorBanner = (state: number) => {
   if (state === MATCH_STATE.VALIDE) return 'bg-green';
   return 'bg-orange';

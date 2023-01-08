@@ -7,6 +7,7 @@ import QInputDescription from 'src/components/input/QInputDescription.vue';
 import QSelectIciPour from 'src/components/input/QSelectIciPour.vue';
 import QInputUniversite from 'src/components/input/QSelectSchool.vue';
 import { useUserStore } from 'src/stores/userStore';
+import { useQuasar } from 'quasar';
 </script>
 
 <template>
@@ -129,7 +130,7 @@ import { useUserStore } from 'src/stores/userStore';
             </q-item-section>
           </q-item>
           <q-input
-            input-style="min-width: 450px"
+            input-style="max-width: 450px; min-width: 350px"
             class="q-mx-none"
             outlined
             filled
@@ -153,7 +154,7 @@ import { useUserStore } from 'src/stores/userStore';
             </template>
           </q-input>
           <q-input
-            input-style="min-width: 450px"
+            input-style="max-width: 450px; min-width: 350px"
             class="q-mx-none"
             outlined
             filled
@@ -312,18 +313,29 @@ const loading = ref(false);
 const userStore = useUserStore();
 const isCreated = ref<boolean | undefined>(undefined);
 const messageError = ref(false);
+const $q = useQuasar();
 
 const createNewUser = async (newUser: ICreateOrEditUser) => {
   // we set loading state
-  loading.value = true;
+  try {
+    loading.value = true;
+    await userStore.saveUserToDataBase(newUser);
+    setTimeout(async () => {
+      isCreated.value = true;
 
-  setTimeout(async () => {
+      loading.value = false;
+    }, 1000);
+  } catch (error) {
     loading.value = false;
-    isCreated.value = await userStore.saveUserToDataBase(newUser);
-    if (!isCreated.value) {
-      messageError.value = true;
-    }
-  }, 2000);
+
+    $q.notify({
+      message: 'Problème identifiants incorrect!',
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'check_circle',
+      position: 'top',
+    });
+  }
 };
 
 const newUser = reactive<ICreateOrEditUser>({

@@ -1,7 +1,7 @@
 <script lang="ts">
 import io from 'socket.io-client';
 import { getRelativeTime } from 'src/utils/date/composable';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { IMessageUser, useAuthStore } from 'src/stores/authStore';
 import { usePolydateStore } from 'src/stores/polydateStore';
 
@@ -15,17 +15,19 @@ export interface Message {
 </script>
 
 <template>
-  <div class="q-pa-none q-ml-lg">
-    <q-chat-message
-      v-for="message in messages"
-      :key="message.messageMatchId"
-      :text="[message.messageContent]"
-      :stamp="getRelativeTime(new Date(message.messageDate))"
-      :sent="isSent(message.messageUserId)"
-      :bg-color="isSent(message.messageUserId) ? 'blue-7' : 'primary'"
-      size="12"
-    />
-
+  <q-page class="column justify-end q-pa-none q-ml-lg">
+    <div class="column q-pr-xl reverse">
+      <q-chat-message
+        v-for="message in messages"
+        :key="message.messageMatchId"
+        :text="[message.messageContent]"
+        :stamp="getRelativeTime(new Date(message.messageDate))"
+        :sent="isSent(message.messageUserId)"
+        text-color="white"
+        :bg-color="isSent(message.messageUserId) ? 'blue-5' : 'primary'"
+        size="12"
+      />
+    </div>
     <q-input
       bottom-slots
       filled
@@ -44,14 +46,13 @@ export interface Message {
         />
       </template>
     </q-input>
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue';
-const socket = io('http://localhost:3000');
+const socket = io('https://cluster-2022-5.dopolytech.fr:3000');
 const inputMessage = ref('');
-const router = useRouter();
 const messages = ref<Message[]>([]);
 
 const authStore = useAuthStore();
@@ -62,20 +63,21 @@ const isSent = (sender: number) => {
 };
 
 onBeforeMount(async () => {
-  if (polydateStore.userTalkToSomeOne === undefined) {
-    router.push({ path: 'messages' });
-  } else {
-    socket.emit('join', polydateStore.userTalkToSomeOne);
-  }
+  const route = useRoute();
+  const urlId = parseInt(route.path.split('/')[2]);
+  let allMessages: Message[] = [];
+
+  const msgs = await polydateStore.getAllMessagesByMatchId(urlId);
+
+  if (msgs === undefined) return;
+  allMessages = msgs;
+
   const userId = authStore.cookieUser?.userId;
   const matchId = polydateStore.userTalkToSomeOne?.matchId;
 
-  if (!userId || !matchId) return;
-
-  const allMessages = await polydateStore.getAllMessagesByMatchId(matchId);
-
-  if (!allMessages) return;
   messages.value = allMessages;
+
+  console.log({ msg: messages.value });
 });
 
 socket.on('message', (data: IMessageUser) => {

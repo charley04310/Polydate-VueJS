@@ -12,7 +12,7 @@ export const useAdminStore = defineStore('Admin', {
     ) {
       try {
         await axios.put(
-          `http://localhost:8090/api/user/state/${userId}`,
+          `https://cluster-2022-5.dopolytech.fr/api/user/state/${userId}`,
           userStatId,
           {
             withCredentials: true,
@@ -27,7 +27,7 @@ export const useAdminStore = defineStore('Admin', {
     },
     async getAllUserQtable() {
       try {
-        const url = 'http://localhost:8090/api/user';
+        const url = 'https://cluster-2022-5.dopolytech.fr/api/user';
         const allUsers = await axios.get(url, {
           withCredentials: true,
           headers: {

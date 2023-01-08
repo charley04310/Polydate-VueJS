@@ -32,30 +32,26 @@ export const usePolydateStore = defineStore('Polydate', {
   },
   actions: {
     async getRandomUserBygenre(genre: number) {
-      try {
-        const url = `http://localhost:8090/api/user/feed/${genre}/${authStore.cookieUser?.userId}`;
-        const randomUser = await axios.get(url, {
-          withCredentials: true,
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
+      const url = `https://cluster-2022-5.dopolytech.fr/api/user/feed/${genre}/${authStore.cookieUser?.userId}`;
+      const randomUser = await axios.get(url, {
+        withCredentials: true,
+        headers: {
+          'Content-type': 'application/json',
+        },
+      });
 
-        this.userFeed = randomUser.data;
-        // console.log(randomUser.data.__images__);
-        if (randomUser.data.__images__.length > 0) {
-          this.userFeedImages = randomUser.data.__images__;
-        } else {
-          this.userFeedImages = undefined;
-        }
-      } catch (error) {
-        console.log(error);
+      this.userFeed = await randomUser.data;
+
+      if (randomUser.data.__images__.length > 0) {
+        this.userFeedImages = randomUser.data.__images__;
+      } else {
+        this.userFeedImages = undefined;
       }
     },
 
     async likeUser(type: number) {
       try {
-        const url = 'http://localhost:8090/api/match/start';
+        const url = 'https://cluster-2022-5.dopolytech.fr/api/match/start';
         const match = await axios.post(
           url,
           { matchDstId: this.userFeed?.userId, matchTypeId: type },
@@ -75,7 +71,7 @@ export const usePolydateStore = defineStore('Polydate', {
     async getAllMatches() {
       const userId = authStore.cookieUser?.userId;
       try {
-        const url = `http://localhost:8090/api/match/obtenir/${userId}`;
+        const url = `https://cluster-2022-5.dopolytech.fr/api/match/obtenir/${userId}`;
         const matches = await axios.get(url, {
           withCredentials: true,
           headers: {
@@ -92,7 +88,7 @@ export const usePolydateStore = defineStore('Polydate', {
     },
     async valideOrRefuseMatche(matchSrcId: number, valideOrRefused: number) {
       try {
-        const url = 'http://localhost:8090/api/match/validation';
+        const url = 'https://cluster-2022-5.dopolytech.fr/api/match/validation';
         await axios.put(
           url,
           { matchSrcId: matchSrcId, matchStatId: valideOrRefused },
@@ -115,7 +111,7 @@ export const usePolydateStore = defineStore('Polydate', {
       receiver: number
     ) {
       try {
-        const url = 'http://localhost:8090/api/messages/envoyer';
+        const url = 'https://cluster-2022-5.dopolytech.fr/api/messages/envoyer';
         const messageUser = await axios.post(
           url,
           {
@@ -142,7 +138,7 @@ export const usePolydateStore = defineStore('Polydate', {
       matchId: number
     ): Promise<Message[] | undefined> {
       try {
-        const url = `http://localhost:8090/api/messages/otenir/${matchId}`;
+        const url = `https://cluster-2022-5.dopolytech.fr/api/messages/otenir/${matchId}`;
         const messages = await axios.get(url, {
           withCredentials: true,
           headers: {

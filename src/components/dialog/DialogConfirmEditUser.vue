@@ -44,7 +44,9 @@ const profilUpdated = ref(false);
 
 const updateUserInformation = async () => {
   emit('updateUserInformation');
-
   profilUpdated.value = true;
+  setTimeout(() => {
+    profilUpdated.value = false;
+  }, 3000);
 };
 </script>

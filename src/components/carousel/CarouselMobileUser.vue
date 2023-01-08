@@ -18,12 +18,12 @@ export default defineComponent({});
       class="shadow-14"
       ref="carousel"
     >
-      <slot v-if="userImage !== undefined">
+      <slot v-if="userImage !== undefined && userImage.length >= 0">
         <q-carousel-slide
           v-for="(image, index) in userImage"
           :key="index"
           :name="index"
-          :img-src="`http://localhost:8090/api/images/user/${image.imageLink}`"
+          :img-src="`https://cluster-2022-5.dopolytech.fr/api/images/user/${image.imageLink}`"
         >
           <div class="absolute-bottom custom-caption">
             <div class="text-h5">
@@ -42,27 +42,25 @@ export default defineComponent({});
         </q-carousel-slide>
       </slot>
 
-      <slot v-else>
-        <q-carousel-slide
-          :name="slide"
-          img-src="https://placeimg.com/500/300/nature"
-        >
-          <div class="absolute-bottom custom-caption">
-            <div class="text-h5">
-              {{ user?.userFirstname }} {{ user?.userLastname }}
-            </div>
-            <div class="text-subtitle1">
-              <q-icon
-                color="white"
-                style="padding-right: 3px"
-                name="school"
-                size="sm"
-              />
-              {{ userSchool }}
-            </div>
+      <q-carousel-slide
+        :name="0"
+        :img-src="`https://ui-avatars.com/api/?name=${user?.userFirstname}+${user?.userLastname}&background=0D8ABC&color=ff0000&size=90`"
+      >
+        <div class="absolute-bottom custom-caption">
+          <div class="text-h5">
+            {{ user?.userFirstname }} {{ user?.userLastname }}
           </div>
-        </q-carousel-slide>
-      </slot>
+          <div class="text-subtitle1">
+            <q-icon
+              color="white"
+              style="padding-right: 3px"
+              name="school"
+              size="sm"
+            />
+            {{ userSchool }}
+          </div>
+        </div>
+      </q-carousel-slide>
     </q-carousel>
     <q-card-section>
       <q-avatar
@@ -100,7 +98,7 @@ const userSchool = computed(() => {
       return 'Université de Medcine Montpellier';
 
     default:
-      return 'Ecole maternelle';
+      return 'Utilisateur non inscrit';
   }
 });
 const slide = ref(0);
